@@ -55,9 +55,10 @@ function validateRequest(body) {
   }
 
   // Basic size check to prevent massive requests
+  // Increased to 10MB to support base64 encoded images
   const requestSize = JSON.stringify(body).length;
-  if (requestSize > 500000) { // 500KB limit
-    return { valid: false, error: 'Request too large. Maximum 500KB.' };
+  if (requestSize > 10000000) { // 10MB limit
+    return { valid: false, error: 'Request too large. Maximum 10MB.' };
   }
 
   return { valid: true };
