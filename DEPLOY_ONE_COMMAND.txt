@@ -1,0 +1,41 @@
+═══════════════════════════════════════════════════════════════
+  NETLIFY DEPLOYMENT - ONE COMMAND SOLUTION
+═══════════════════════════════════════════════════════════════
+
+Copy and paste this ENTIRE command into your terminal:
+
+────────────────────────────────────────────────────────────────
+
+cd "c:\Users\AMors\Desktop\body mode" && netlify init && netlify env:set GEMINI_API_KEY "AIzaSyD2QnjMptHnvGAFS_yYq2KKbDYoB0L_Ztc" && netlify deploy --prod --dir=public --functions=netlify/functions && netlify status
+
+────────────────────────────────────────────────────────────────
+
+WHEN PROMPTED, SELECT THESE OPTIONS:
+
+1. "What would you like to do?"
+   → Select: "Create & configure a new project"
+
+2. "Team:"
+   → Select: "Viperdam"
+
+3. "Site name:"
+   → Enter: "body-mode-backend"
+   (If taken, try: "body-mode-api-2024")
+
+4. "Your build command:"
+   → Press ENTER (leave empty)
+
+5. "Directory to deploy:"
+   → Type: "public" and press ENTER
+
+6. "Netlify functions folder:"
+   → Type: "netlify/functions" and press ENTER
+
+THEN IT WILL:
+- Set your API key automatically
+- Deploy to production
+- Show you the site URL
+
+COPY THE URL FROM THE OUTPUT!
+
+═══════════════════════════════════════════════════════════════

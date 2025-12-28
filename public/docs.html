@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Body Mode API Documentation - Developer guide for integrating with our serverless backend">
+    <title>API Documentation - Body Mode</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .docs-page code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+        .docs-page pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .docs-page pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        .endpoint-card {
+            background: #f9fafb;
+            border-left: 4px solid #6366f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .method-badge {
+            display: inline-block;
+            background: #059669;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin-right: 10px;
+        }
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #ecfdf5;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        .docs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        .docs-table th {
+            background: #f3f4f6;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .docs-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">💪 Body Mode</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#how-it-works">How It Works</a></li>
+                <li><a href="/docs.html" class="active">Docs</a></li>
+                <li><a href="/#download">Download</a></li>
+                <li><a href="/privacy.html">Privacy</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Documentation Content -->
+    <div class="docs-page legal-page">
+        <div class="container" style="max-width: 1000px; padding: 120px 20px 80px;">
+            <h1 class="page-title">API Documentation</h1>
+            <p class="last-updated">Version 1.0 - Last Updated: December 28, 2024</p>
+
+            <!-- API Status -->
+            <div style="margin: 40px 0;">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>API Status: Operational</span>
+                </div>
+                <p style="margin-top: 10px; color: #6b7280;">Base URL: <code>https://bodymode.netlify.app</code></p>
+            </div>
+
+            <section class="legal-section">
+                <h2>Overview</h2>
+                <p>Body Mode's backend is powered by Netlify serverless functions that provide a secure proxy to Google's Gemini AI API. This architecture keeps API keys server-side while providing fast, scalable AI features to the mobile app.</p>
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li>🔒 <strong>Secure API Key Management:</strong> Keys never exposed to client applications</li>
+                    <li>⚡ <strong>Serverless Architecture:</strong> Auto-scaling with 99.9% uptime</li>
+                    <li>🌍 <strong>Global CDN:</strong> Low-latency responses worldwide</li>
+                    <li>💰 <strong>Free Tier:</strong> 125,000 function calls per month</li>
+                    <li>🛡️ <strong>CORS Enabled:</strong> Secure cross-origin requests from mobile apps</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>Authentication</h2>
+                <p>The API does not require client-side authentication. The Gemini API key is securely stored as an environment variable on Netlify servers and never exposed to clients.</p>
+                <p><strong>Note:</strong> While the endpoint is publicly accessible, it implements request validation and rate limiting to prevent abuse.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>Endpoints</h2>
+
+                <!-- Gemini Proxy Endpoint -->
+                <div class="endpoint-card">
+                    <h3 style="margin-top: 0;">
+                        <span class="method-badge">POST</span>
+                        Gemini AI Proxy
+                    </h3>
+                    <p><code>/.netlify/functions/gemini-proxy</code></p>
+                    <p>Proxies requests to Google's Gemini AI API for food recognition, plan generation, chat, and other AI features.</p>
+                </div>
+
+                <h3>Request Headers</h3>
+                <div class="table-container">
+                    <table class="docs-table">
+                        <thead>
+                            <tr>
+                                <th>Header</th>
+                                <th>Value</th>
+                                <th>Required</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Content-Type</code></td>
+                                <td><code>application/json</code></td>
+                                <td>✅ Yes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Request Body Parameters</h3>
+                <div class="table-container">
+                    <table class="docs-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>model</code></td>
+                                <td>string</td>
+                                <td>✅ Yes</td>
+                                <td>Gemini model name (e.g., "gemini-1.5-flash", "gemini-1.5-pro")</td>
+                            </tr>
+                            <tr>
+                                <td><code>contents</code></td>
+                                <td>object</td>
+                                <td>✅ Yes</td>
+                                <td>Message content with parts array containing text/images</td>
+                            </tr>
+                            <tr>
+                                <td><code>config</code></td>
+                                <td>object</td>
+                                <td>❌ No</td>
+                                <td>Optional configuration (systemInstruction, responseMimeType, etc.)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Example Request</h3>
+<pre><code>{
+  "model": "gemini-1.5-flash",
+  "contents": {
+    "parts": [
+      {
+        "text": "Analyze this meal and provide nutritional information"
+      },
+      {
+        "inlineData": {
+          "mimeType": "image/jpeg",
+          "data": "base64_encoded_image_data..."
+        }
+      }
+    ]
+  },
+  "config": {
+    "systemInstruction": "You are a nutrition expert...",
+    "responseMimeType": "application/json",
+    "generationConfig": {
+      "temperature": 0.7,
+      "maxOutputTokens": 2048
+    }
+  }
+}</code></pre>
+
+                <h3>Success Response (200 OK)</h3>
+<pre><code>{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "{\"food\":\"Chicken Salad\",\"calories\":350,...}"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "text": "{\"food\":\"Chicken Salad\",\"calories\":350,...}"
+}</code></pre>
+
+                <h3>Error Responses</h3>
+                <div class="table-container">
+                    <table class="docs-table">
+                        <thead>
+                            <tr>
+                                <th>Status Code</th>
+                                <th>Reason</th>
+                                <th>Response Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>400</code></td>
+                                <td>Bad Request</td>
+                                <td><code>{"error": "Missing required fields"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>405</code></td>
+                                <td>Method Not Allowed</td>
+                                <td><code>{"error": "Method not allowed"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>413</code></td>
+                                <td>Payload Too Large</td>
+                                <td><code>{"error": "Request too large"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>500</code></td>
+                                <td>Server Error</td>
+                                <td><code>{"error": "Internal server error"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>503</code></td>
+                                <td>Service Unavailable</td>
+                                <td><code>{"error": "Gemini API unavailable"}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="legal-section">
+                <h2>Rate Limits</h2>
+                <p>Our free tier provides generous limits for all users:</p>
+                <ul>
+                    <li><strong>Function Calls:</strong> 125,000 requests per month</li>
+                    <li><strong>Bandwidth:</strong> 100 GB per month</li>
+                    <li><strong>Concurrent Requests:</strong> 1,000 simultaneous</li>
+                    <li><strong>Request Timeout:</strong> 26 seconds maximum</li>
+                    <li><strong>Payload Size:</strong> 500 KB maximum per request</li>
+                </ul>
+                <p>These limits are shared across all users. If you experience rate limiting, please wait a few seconds and retry.</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>Request Validation</h2>
+                <p>All requests are validated before being forwarded to Gemini AI:</p>
+                <ul>
+                    <li>✅ <strong>Method Validation:</strong> Only POST requests accepted</li>
+                    <li>✅ <strong>Content-Type Check:</strong> Must be application/json</li>
+                    <li>✅ <strong>Required Fields:</strong> model and contents must be present</li>
+                    <li>✅ <strong>Size Validation:</strong> Request body limited to 500 KB</li>
+                    <li>✅ <strong>JSON Validation:</strong> Malformed JSON rejected with error</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>Common Use Cases</h2>
+
+                <h3>1. Food Recognition from Photos</h3>
+<pre><code>POST /.netlify/functions/gemini-proxy
+{
+  "model": "gemini-1.5-flash",
+  "contents": {
+    "parts": [
+      {"text": "Analyze this food image"},
+      {"inlineData": {"mimeType": "image/jpeg", "data": "..."}}
+    ]
+  },
+  "config": {
+    "systemInstruction": "You are a nutrition expert...",
+    "responseMimeType": "application/json"
+  }
+}</code></pre>
+
+                <h3>2. Daily Plan Generation</h3>
+<pre><code>POST /.netlify/functions/gemini-proxy
+{
+  "model": "gemini-1.5-flash",
+  "contents": {
+    "parts": [
+      {"text": "Generate a personalized daily plan for..."}
+    ]
+  },
+  "config": {
+    "systemInstruction": "Create personalized health plans...",
+    "responseMimeType": "application/json"
+  }
+}</code></pre>
+
+                <h3>3. Chat with AI Coach</h3>
+<pre><code>POST /.netlify/functions/gemini-proxy
+{
+  "model": "gemini-1.5-flash",
+  "contents": {
+    "parts": [
+      {"text": "User: How many calories should I eat?\nAI: "}
+    ]
+  },
+  "config": {
+    "systemInstruction": "You are a health and fitness coach...",
+    "generationConfig": {"temperature": 0.9}
+  }
+}</code></pre>
+            </section>
+
+            <section class="legal-section">
+                <h2>Error Handling Best Practices</h2>
+                <p>When integrating with the API, implement robust error handling:</p>
+
+<pre><code>async function callGeminiProxy(data) {
+  try {
+    const response = await fetch(
+      'https://bodymode.netlify.app/.netlify/functions/gemini-proxy',
+      {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+        signal: AbortSignal.timeout(45000) // 45s timeout
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'API request failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (error.name === 'TimeoutError') {
+      console.error('Request timeout - try again');
+    } else if (error.name === 'NetworkError') {
+      console.error('Network error - check connection');
+    } else {
+      console.error('API Error:', error.message);
+    }
+    throw error;
+  }
+}</code></pre>
+            </section>
+
+            <section class="legal-section">
+                <h2>Mobile App Integration</h2>
+                <p>The Body Mode React Native app uses a dedicated service wrapper to call the API:</p>
+
+                <h3>Service File Location</h3>
+                <p><code>mobile/src/services/netlifyGeminiService.ts</code></p>
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Environment-based URL switching (dev/production)</li>
+                    <li>45-second timeout for long AI responses</li>
+                    <li>Automatic retry logic with exponential backoff</li>
+                    <li>Comprehensive error handling</li>
+                    <li>Request/response logging in development</li>
+                </ul>
+            </section>
+
+            <section class="legal-section">
+                <h2>Testing the API</h2>
+
+                <h3>Using cURL</h3>
+<pre><code>curl -X POST https://bodymode.netlify.app/.netlify/functions/gemini-proxy \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-1.5-flash",
+    "contents": {
+      "parts": [{"text": "Say hello"}]
+    }
+  }'</code></pre>
+
+                <h3>Using Postman</h3>
+                <ol>
+                    <li>Create new POST request to <code>https://bodymode.netlify.app/.netlify/functions/gemini-proxy</code></li>
+                    <li>Set header: <code>Content-Type: application/json</code></li>
+                    <li>Add JSON body with model, contents, and config</li>
+                    <li>Send request and inspect response</li>
+                </ol>
+
+                <h3>Using JavaScript Fetch</h3>
+<pre><code>fetch('https://bodymode.netlify.app/.netlify/functions/gemini-proxy', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    model: 'gemini-1.5-flash',
+    contents: {parts: [{text: 'Hello, AI!'}]}
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error(err));</code></pre>
+            </section>
+
+            <section class="legal-section">
+                <h2>Support & Contact</h2>
+                <p>If you encounter issues with the API or have questions:</p>
+                <ul>
+                    <li><strong>Email:</strong> api@bodymode.app</li>
+                    <li><strong>Website:</strong> <a href="https://bodymode.netlify.app">bodymode.netlify.app</a></li>
+                    <li><strong>Status Page:</strong> <a href="/#api-status">API Status</a></li>
+                </ul>
+            </section>
+
+            <div class="legal-footer" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
+                <p><a href="/" class="back-link">← Back to Home</a> | <a href="/privacy.html">Privacy Policy</a> | <a href="/terms.html">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Body Mode</h4>
+                    <p>Your AI-powered health & fitness companion</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="/#features">Features</a></li>
+                        <li><a href="/docs.html">Documentation</a></li>
+                        <li><a href="/#download">Download</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Body Mode. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

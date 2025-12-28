@@ -1,0 +1,25 @@
+# Netlify Configuration for Body Mode Backend
+# This configures serverless functions to securely proxy Gemini API calls
+
+[build]
+  # Skip build - static site with serverless functions
+  command = ""
+  publish = "public"
+
+[functions]
+  # Serverless functions directory
+  directory = "netlify/functions"
+  # Increase timeout for AI generation (max 10s on free tier)
+  node_bundler = "esbuild"
+
+[[redirects]]
+  # Redirect API calls to serverless functions
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[context.production.environment]
+  NODE_VERSION = "18"
+
+[context.dev.environment]
+  NODE_VERSION = "18"

@@ -1,0 +1,9 @@
+{
+  "name": "BioSync AI: Metabolism & Sleep",
+  "short_name": "BioSync",
+  "description": "The first AI that syncs with your biology. Track metabolism, sleep cycles, and calories with Gemini 2.0.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}

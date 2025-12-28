@@ -1,0 +1,73 @@
+# Body Mode - Root Project .gitignore
+
+# ===== Environment & Secrets =====
+.env
+.env.*
+!.env.example
+!.env.netlify.example
+*.local
+
+# ===== Dependencies =====
+node_modules/
+.pnp
+.pnp.js
+
+# ===== Build outputs =====
+dist/
+dist-ssr/
+build/
+.cache/
+
+# ===== Netlify =====
+.netlify/
+
+# ===== Logs =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ===== Editor & IDE =====
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# ===== Temporary files =====
+*.tmp
+*.temp
+nul
+deploy_output.tmp
+netlify_status.tmp
+http_code.tmp
+api_response.tmp
+env_list.tmp
+homepage_test.tmp
+privacy_test.tmp
+docs_test.tmp
+deployment_log.txt
+*.bak
+
+# ===== Test files =====
+test_api*.json
+test_final.json
+
+# ===== Mobile app (separate repo) =====
+mobile/
+
+# ===== Gemini brain files =====
+.gemini/
+.claude/
+
+# ===== OS files =====
+Thumbs.db
+Desktop.ini

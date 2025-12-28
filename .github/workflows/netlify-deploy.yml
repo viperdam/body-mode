@@ -1,0 +1,41 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'netlify/**'
+      - 'public/**'
+      - 'netlify.toml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Netlify
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          netlify deploy --prod --dir=public --functions=netlify/functions
+
+      - name: Deployment Summary
+        run: |
+          echo "## 🚀 Netlify Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Website and functions deployed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🌐 Live URLs" >> $GITHUB_STEP_SUMMARY
+          echo "- Website: https://bodymode.netlify.app" >> $GITHUB_STEP_SUMMARY
+          echo "- API: https://bodymode.netlify.app/.netlify/functions/gemini-proxy" >> $GITHUB_STEP_SUMMARY
