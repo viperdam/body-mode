@@ -28,7 +28,7 @@
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 const ALLOWED_MODELS = [
   // User's preferred models
-  'gemini-3-pro-preview',
+  'gemini-3-flash-preview',
   'gemini-flash-latest',
   'gemini-flash-lite-latest',
   'gemini-robotics-er-1.5-preview',
@@ -202,7 +202,7 @@ exports.handler = async (event) => {
     }
 
     // Extract parameters
-    const model = body.model || 'gemini-3-pro-preview'; // Default model
+    const model = body.model || 'gemini-3-flash-preview'; // Default model
     const contents = body.contents;
     const config = body.config || {};
 
