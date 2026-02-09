@@ -243,7 +243,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
                       {formData.goal !== 'maintain' && (
                           <div className="grid grid-cols-2 gap-3 mb-4">
                               <div>
-                                  <label className="text-xs font-bold text-slate-500">Target Weight (kg)</label>
+                                  <label className="text-xs font-bold text-slate-500">{t('target_weight')}</label>
                                   <input 
                                       type="number" 
                                       value={formData.goalWeight || ''} 
@@ -253,7 +253,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
                                   />
                               </div>
                               <div>
-                                  <label className="text-xs font-bold text-slate-500">Target Date</label>
+                                  <label className="text-xs font-bold text-slate-500">{t('target_date')}</label>
                                   <input 
                                       type="date" 
                                       value={formData.targetDate || ''} 
@@ -265,7 +265,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
                       )}
 
                       <div>
-                          <label className="text-xs font-bold text-slate-500 mb-2 block">Plan Pace</label>
+                          <label className="text-xs font-bold text-slate-500 mb-2 block">{t('plan_pace')}</label>
                           <div className="grid grid-cols-3 gap-2">
                               {[
                                   { id: 'slow', label: 'Turtle 🐢', desc: 'Easy' },
@@ -293,7 +293,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
                       {isRecalculating ? t('refining') : t('save_update')}
                   </Button>
                   <p className="text-center text-[10px] text-slate-500 mt-2">
-                      Changes to health status will trigger a full plan recalculation.
+                      {t('recalc_note')}
                   </p>
               </div>
           </div>
@@ -313,7 +313,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
               <h1 className="text-3xl font-extrabold">{t('nav.profile')}</h1>
           </div>
           <button onClick={() => setIsEditing(true)} className="text-sm font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 px-4 py-2 rounded-full">
-            Edit
+            {t('edit')}
           </button>
       </div>
       
@@ -344,12 +344,12 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
                  )}
                  {user.goalWeight && (
                      <span className="text-[10px] uppercase tracking-wide px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold">
-                         Goal: {user.goalWeight}kg
+                         {t('goal_label')}: {user.goalWeight}kg
                      </span>
                  )}
                  {user.culinaryIdentity?.origin && (
                      <span className="text-[10px] uppercase tracking-wide px-2 py-1 bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-lg font-bold">
-                         {user.culinaryIdentity.origin} Roots
+                         {user.culinaryIdentity.origin}
                      </span>
                  )}
             </div>
@@ -359,8 +359,8 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
       {/* --- MOOD TRACKER SECTION --- */}
       <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700">
           <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-800 dark:text-white">How are you feeling?</h3>
-              {todayMoodLogged && <span className="text-xs text-emerald-500 font-bold">Logged today ✓</span>}
+              <h3 className="font-bold text-slate-800 dark:text-white">{t('how_feeling')}</h3>
+              {todayMoodLogged && <span className="text-xs text-emerald-500 font-bold">{t('logged_today')}</span>}
           </div>
           <div className="flex justify-between gap-2 overflow-x-auto pb-2 no-scrollbar">
               {MOODS.map((m) => (
@@ -395,7 +395,7 @@ export const Profile: React.FC<ProfileProps> = ({ user, moodLogs, weightLogs, on
       {weightLogs.length > 0 && (
         <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-700">
            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-slate-800 dark:text-white">Weight Progress</h3>
+              <h3 className="font-bold text-slate-800 dark:text-white">{t('weight_progress')}</h3>
               <div className="flex flex-col items-end">
                    <span className="text-xs text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-lg font-bold mb-1">
                     Current: {weightLogs[weightLogs.length - 1].weight} kg

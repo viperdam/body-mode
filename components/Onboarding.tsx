@@ -108,25 +108,25 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <div className="w-24 h-24 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-5xl">🔐</span>
                 </div>
-                <h2 className="text-3xl font-black text-white">Enable Access</h2>
-                <p className="text-indigo-200/60 font-medium">To be your best AI Coach, LifeSync needs access to:</p>
+                <h2 className="text-3xl font-black text-white">{t('enable_access')}</h2>
+                <p className="text-indigo-200/60 font-medium">{t('enable_access_desc')}</p>
                 <div className="space-y-4 text-left glass-card p-6 rounded-2xl">
                     <div className="flex items-center space-x-3">
                         <span className="text-2xl">🔔</span>
                         <div>
-                            <h4 className="font-bold text-white">Notifications</h4>
-                            <p className="text-xs text-slate-400">Smart reminders for meals & sleep.</p>
+                            <h4 className="font-bold text-white">{t('notifications')}</h4>
+                            <p className="text-xs text-slate-400">{t('notif_desc')}</p>
                         </div>
                     </div>
                      <div className="flex items-center space-x-3">
                         <span className="text-2xl">📱</span>
                         <div>
-                            <h4 className="font-bold text-white">Motion Sensors</h4>
-                            <p className="text-xs text-slate-400">Track sleep cycles via mattress movement.</p>
+                            <h4 className="font-bold text-white">{t('motion_sensors')}</h4>
+                            <p className="text-xs text-slate-400">{t('motion_desc')}</p>
                         </div>
                     </div>
                 </div>
-                <Button fullWidth onClick={requestPermissions} className="py-4 text-lg bg-emerald-500 hover:bg-emerald-600">Grant Permissions</Button>
+                <Button fullWidth onClick={requestPermissions} className="py-4 text-lg bg-emerald-500 hover:bg-emerald-600">{t('grant_permissions')}</Button>
            </div>
         );
 
@@ -215,7 +215,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                             onChange={e => setFormData({...formData, culinaryIdentity: { ...formData.culinaryIdentity!, origin: e.target.value }})}
                             placeholder={t('origin_placeholder')}
                         />
-                        <p className="text-[10px] text-slate-500 mt-2">Determines spice levels and comfort foods.</p>
+                        <p className="text-[10px] text-slate-500 mt-2">{t('origin_hint')}</p>
                     </div>
 
                     <div className="glass-card p-5 rounded-2xl border-l-4 border-l-cyan-500">
@@ -227,7 +227,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                             onChange={e => setFormData({...formData, culinaryIdentity: { ...formData.culinaryIdentity!, residence: e.target.value }})}
                             placeholder={t('residence_placeholder')}
                         />
-                        <p className="text-[10px] text-slate-500 mt-2">Ensures suggested ingredients are available nearby.</p>
+                        <p className="text-[10px] text-slate-500 mt-2">{t('residence_hint')}</p>
                     </div>
                 </div>
             </div>
@@ -237,13 +237,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         return (
             <div className="space-y-8 animate-fade-in">
                  <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-black text-white">Life & Family</h2>
-                    <p className="text-indigo-200/60 font-medium">To balance your plan effectively.</p>
+                    <h2 className="text-3xl font-black text-white">{t('life_family')}</h2>
+                    <p className="text-indigo-200/60 font-medium">{t('life_family_desc')}</p>
                 </div>
 
                 <div className="space-y-6">
                     <div>
-                        <label className="block text-xs font-bold text-slate-400 uppercase mb-3">Status</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-3">{t('status')}</label>
                         <div className="grid grid-cols-3 gap-3">
                              {['single', 'married', 'partner'].map(status => (
                                 <button 
@@ -259,8 +259,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
                     <div className="glass-card p-5 rounded-2xl flex items-center justify-between">
                          <div>
-                             <h4 className="font-bold text-white text-lg">Children</h4>
-                             <p className="text-xs text-slate-500">Affects meal prep time</p>
+                             <h4 className="font-bold text-white text-lg">{t('children')}</h4>
+                             <p className="text-xs text-slate-500">{t('children_desc')}</p>
                          </div>
                          <div className="flex items-center space-x-4">
                              <button onClick={() => setFormData({...formData, childrenCount: Math.max(0, (formData.childrenCount || 0) - 1)})} className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xl">-</button>
@@ -290,7 +290,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                             placeholder={t('chronic_conditions')}
                             rows={2}
                          />
-                         <p className="text-[10px] text-slate-500 mt-2">Separate with commas.</p>
+                         <p className="text-[10px] text-slate-500 mt-2">{t('separate_commas')}</p>
                      </div>
 
                      <div className="glass-card p-4 rounded-2xl">
@@ -371,10 +371,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                     onChange={e => setFormData({...formData, activityLevel: e.target.value as any})}
                     className="w-full bg-slate-800 text-white p-3 rounded-xl border-none outline-none"
                 >
-                    <option value="sedentary">Sedentary (Office job)</option>
-                    <option value="light">Light Activity</option>
-                    <option value="moderate">Moderate Exercise</option>
-                    <option value="active">Very Active</option>
+                    <option value="sedentary">{t('activity_sedentary')}</option>
+                    <option value="light">{t('activity_light')}</option>
+                    <option value="moderate">{t('activity_moderate')}</option>
+                    <option value="active">{t('activity_active')}</option>
                  </select>
             </div>
 
@@ -481,9 +481,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             {formData.goal !== 'maintain' && (
                 <div className="grid grid-cols-2 gap-4 animate-fade-in">
                     <div className="glass-card p-4 rounded-2xl">
-                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Target Weight (kg)</label>
-                        <input 
-                            type="number" 
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t('target_weight')}</label>
+                        <input
+                            type="number"
                             className="w-full bg-transparent border-none p-0 text-2xl font-bold text-white focus:ring-0 placeholder:text-slate-700"
                             value={formData.goalWeight || ''}
                             onChange={e => setFormData({...formData, goalWeight: Number(e.target.value)})}
@@ -491,7 +491,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                         />
                     </div>
                     <div className="glass-card p-4 rounded-2xl">
-                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Target Date</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t('target_date')}</label>
                         <input 
                             type="date" 
                             className="w-full bg-transparent border-none p-0 text-lg font-bold text-white focus:ring-0 placeholder:text-slate-700"
@@ -504,7 +504,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             
             {/* INTENSITY SELECTOR */}
             <div>
-                 <label className="block text-xs font-bold text-slate-400 uppercase mb-3 text-center">Plan Pace</label>
+                 <label className="block text-xs font-bold text-slate-400 uppercase mb-3 text-center">{t('plan_pace')}</label>
                  <div className="grid grid-cols-3 gap-2">
                     {[
                         { id: 'slow', label: 'Turtle 🐢', desc: 'Easy' },
@@ -535,11 +535,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                  <div className="w-24 h-24 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-spin-slow shadow-[0_0_50px_rgba(99,102,241,0.5)]">
                     <span className="text-5xl animate-pulse">🧠</span>
                 </div>
-                <h2 className="text-3xl font-black text-white">Gemini is Thinking...</h2>
+                <h2 className="text-3xl font-black text-white">{t('gemini_thinking')}</h2>
                 <p className="text-indigo-200/70 font-medium">
-                    Analyzing metabolism... <br/>
-                    Adjusting for {tempConditions ? 'medical conditions' : 'lifestyle'}... <br/>
-                    Matching heritage to location...
+                    {t('analyzing_metabolism')} <br/>
+                    {t('adjusting_for')} {tempConditions ? t('medical_conditions') : t('lifestyle')}... <br/>
+                    {t('matching_heritage')}
                 </p>
             </div>
         );

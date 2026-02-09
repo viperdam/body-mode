@@ -132,7 +132,7 @@ export const SmartFridge: React.FC<SmartFridgeProps> = ({ user, onClose }) => {
             <div className="animate-fade-in space-y-6">
                 <div className="text-center">
                     <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{t('cooking_mood')}</h3>
-                    <p className="text-slate-500 text-sm">Found {ingredients.length} ingredients. How much effort today?</p>
+                    <p className="text-slate-500 text-sm">{t('found_ingredients').replace('{n}', String(ingredients.length))}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-2 justify-center mb-6">
@@ -150,7 +150,7 @@ export const SmartFridge: React.FC<SmartFridgeProps> = ({ user, onClose }) => {
                             <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded">15m</span>
                         </div>
                         <h4 className="font-bold text-lg">{t('mood_quick')}</h4>
-                        <p className="text-white/80 text-xs">Simple, fast, minimal cleanup.</p>
+                        <p className="text-white/80 text-xs">{t('mood_quick_desc')}</p>
                     </button>
 
                     <button onClick={() => handleMoodSelect('balanced')} className="w-full p-5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl text-white shadow-lg shadow-emerald-500/20 active:scale-98 transition-transform text-left">
@@ -159,7 +159,7 @@ export const SmartFridge: React.FC<SmartFridgeProps> = ({ user, onClose }) => {
                             <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded">45m</span>
                         </div>
                         <h4 className="font-bold text-lg">{t('mood_balanced')}</h4>
-                        <p className="text-white/80 text-xs">Traditional cooking, balanced flavors.</p>
+                        <p className="text-white/80 text-xs">{t('mood_balanced_desc')}</p>
                     </button>
 
                     <button onClick={() => handleMoodSelect('gourmet')} className="w-full p-5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl text-white shadow-lg shadow-purple-500/20 active:scale-98 transition-transform text-left">
@@ -168,7 +168,7 @@ export const SmartFridge: React.FC<SmartFridgeProps> = ({ user, onClose }) => {
                             <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded">60m+</span>
                         </div>
                         <h4 className="font-bold text-lg">{t('mood_gourmet')}</h4>
-                        <p className="text-white/80 text-xs">Complex techniques, presentation focused.</p>
+                        <p className="text-white/80 text-xs">{t('mood_gourmet_desc')}</p>
                     </button>
                 </div>
             </div>

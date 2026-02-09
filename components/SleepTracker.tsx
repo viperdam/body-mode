@@ -13,7 +13,7 @@ interface SleepTrackerProps {
 }
 
 export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSession, initialWakeTime, initialWakeWindow = 30 }) => {
-  const { language } = useLanguage(); // Get current language
+  const { language, t } = useLanguage();
   const [mode, setMode] = useState<'sensor' | 'manual'>('sensor');
   const [isTracking, setIsTracking] = useState(false);
   
@@ -285,12 +285,12 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
   if (sessionResult) {
        return (
           <div className="h-full flex flex-col bg-slate-900 text-white p-6 animate-fade-in overflow-y-auto">
-              <h2 className="text-3xl font-bold mb-2">Good Morning! ☀️</h2>
-              <p className="text-slate-400 mb-6">Sleep Synced & Logged.</p>
+              <h2 className="text-3xl font-bold mb-2">{t('good_morning')} ☀️</h2>
+              <p className="text-slate-400 mb-6">{t('sleep_synced')}</p>
               
               <div className="bg-slate-800 rounded-3xl p-6 mb-6">
                   <div className="flex justify-between items-center mb-4">
-                      <span className="text-slate-400 text-sm uppercase font-bold">Sleep Score</span>
+                      <span className="text-slate-400 text-sm uppercase font-bold">{t('sleep_score')}</span>
                       <span className="text-4xl font-black text-emerald-400">{sessionResult.efficiencyScore}</span>
                   </div>
                   <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
@@ -300,11 +300,11 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-slate-800 p-4 rounded-2xl">
-                       <span className="text-slate-400 text-xs uppercase font-bold">Duration</span>
+                       <span className="text-slate-400 text-xs uppercase font-bold">{t('duration')}</span>
                        <p className="text-2xl font-bold">{(sessionResult.durationMinutes / 60).toFixed(1)}h</p>
                   </div>
                    <div className="bg-slate-800 p-4 rounded-2xl">
-                       <span className="text-slate-400 text-xs uppercase font-bold">Fell Asleep</span>
+                       <span className="text-slate-400 text-xs uppercase font-bold">{t('fell_asleep')}</span>
                        <p className="text-2xl font-bold">{new Date(sessionResult.startTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
                   </div>
               </div>
@@ -313,7 +313,7 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                   <p className="text-cyan-200 text-sm leading-relaxed">"{sessionResult.aiAnalysis}"</p>
               </div>
 
-              <Button onClick={onClose} fullWidth className="mt-auto bg-slate-700 hover:bg-slate-600">Back to BioSync</Button>
+              <Button onClick={onClose} fullWidth className="mt-auto bg-slate-700 hover:bg-slate-600">{t('back_to_app')}</Button>
           </div>
       );
   }
@@ -322,10 +322,10 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
       return (
         <div className="h-full flex flex-col items-center justify-center bg-red-500 text-white relative overflow-hidden animate-pulse">
             <div className="z-10 text-center space-y-10">
-                <h1 className="text-6xl font-black uppercase tracking-tighter">Wake Up!</h1>
+                <h1 className="text-6xl font-black uppercase tracking-tighter">{t('wake_up_alarm')}</h1>
             </div>
             <div className="absolute bottom-10 w-full px-6 z-20">
-                <Button onClick={stopAlarm} fullWidth className="bg-white text-red-600 hover:bg-red-50 py-6 text-xl shadow-xl">I'm Awake</Button>
+                <Button onClick={stopAlarm} fullWidth className="bg-white text-red-600 hover:bg-red-50 py-6 text-xl shadow-xl">{t('im_awake')}</Button>
             </div>
         </div>
       );
@@ -340,15 +340,15 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                 <div className="text-center space-y-8 max-w-sm">
                     <div className="text-6xl animate-bounce">👀</div>
                     <div>
-                        <h2 className="text-4xl font-black text-white mb-2">Still Awake?</h2>
-                        <p className="text-slate-400">Tap screen to dismiss.</p>
+                        <h2 className="text-4xl font-black text-white mb-2">{t('still_awake')}</h2>
+                        <p className="text-slate-400">{t('tap_dismiss')}</p>
                     </div>
                     
                     <button 
                         onClick={handleImAwake}
                         className="w-full py-8 bg-cyan-600 rounded-[2.5rem] text-xl font-bold shadow-[0_0_50px_rgba(6,182,212,0.5)] active:scale-95 transition-transform border border-cyan-400/30"
                     >
-                        Yes, I'm Awake
+                        {t('yes_im_awake')}
                     </button>
                 </div>
             </div>
@@ -364,13 +364,13 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                     onClick={() => !isTracking && setMode('sensor')}
                     className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${mode === 'sensor' ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                 >
-                    Auto
+                    {t('auto_mode')}
                 </button>
-                <button 
+                <button
                     onClick={() => !isTracking && setMode('manual')}
                     className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${mode === 'manual' ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
                 >
-                    Manual
+                    {t('manual_mode')}
                 </button>
             </div>
             <div className="w-10"></div>
@@ -381,20 +381,20 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
             <div className="flex-1 flex flex-col p-6 pt-10 animate-fade-in relative z-10">
                  <div className="text-center mb-10">
                     <span className="text-4xl">📝</span>
-                    <h2 className="text-2xl font-bold mt-4 dark:text-white">Log Sleep</h2>
+                    <h2 className="text-2xl font-bold mt-4 dark:text-white">{t('log_sleep')}</h2>
                 </div>
                  <div className="space-y-6 max-w-sm mx-auto w-full">
                     <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Bedtime (Yesterday)</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t('bedtime_yesterday')}</label>
                         <input type="time" value={manualBedTime} onChange={(e) => setManualBedTime(e.target.value)} className="w-full text-3xl font-bold bg-transparent outline-none text-cyan-600 dark:text-cyan-400" />
                     </div>
                      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Wake Time</label>
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">{t('wake_time')}</label>
                         <input type="time" value={manualWakeTime} onChange={(e) => setManualWakeTime(e.target.value)} className="w-full text-3xl font-bold bg-transparent outline-none text-emerald-600 dark:text-emerald-400" />
                     </div>
                  </div>
                  <div className="mt-auto pt-8">
-                    <Button fullWidth onClick={handleManualSave} className="bg-cyan-600 text-white py-4 text-lg rounded-2xl">Save Log</Button>
+                    <Button fullWidth onClick={handleManualSave} className="bg-cyan-600 text-white py-4 text-lg rounded-2xl">{t('save_log')}</Button>
                 </div>
             </div>
         )}
@@ -406,7 +406,7 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                     {analyzing ? (
                         <div className="text-center space-y-4">
                             <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                            <p className="text-xl font-bold">BioSyncing...</p>
+                            <p className="text-xl font-bold">{t('biosyncing')}</p>
                         </div>
                     ) : (
                         <>
@@ -416,9 +416,9 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                                     {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </div>
                                 <p className={`text-lg font-medium text-center transition-colors duration-500 ${isTracking ? 'text-emerald-400' : 'text-slate-500'}`}>
-                                    {isTracking 
-                                        ? (confirmedSleepStartTime ? 'Sleep Confirmed. Goodnight 🌙' : 'Monitoring Movement...') 
-                                        : 'Place phone on mattress'
+                                    {isTracking
+                                        ? (confirmedSleepStartTime ? t('sleep_confirmed') : t('monitoring_movement'))
+                                        : t('place_phone')
                                     }
                                 </p>
                             </div>
@@ -426,7 +426,7 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                             {!isTracking && (
                                 <div className="mt-8 bg-white/5 backdrop-blur-md rounded-2xl p-4 w-full max-w-xs border border-white/10">
                                     <div className="flex justify-between items-center mb-4">
-                                        <span className="text-sm font-bold text-slate-300">Smart Alarm</span>
+                                        <span className="text-sm font-bold text-slate-300">{t('smart_alarm')}</span>
                                         <button 
                                             onClick={() => setIsAlarmEnabled(!isAlarmEnabled)}
                                             className={`w-12 h-6 rounded-full p-1 transition-colors ${isAlarmEnabled ? 'bg-emerald-500' : 'bg-slate-600'}`}
@@ -438,7 +438,7 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                                     {isAlarmEnabled && (
                                         <div className="space-y-3 animate-fade-in">
                                             <div className="flex items-center justify-between">
-                                                <label className="text-xs text-slate-400">Wake By</label>
+                                                <label className="text-xs text-slate-400">{t('wake_by')}</label>
                                                 <input 
                                                     type="time" 
                                                     value={wakeTime}
@@ -454,7 +454,7 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                             {isTracking && (
                                 <div className="w-full max-w-xs space-y-2 mt-12 opacity-50">
                                     <div className="flex justify-between text-xs text-slate-500 uppercase tracking-widest font-bold">
-                                        <span>Movement Intensity</span>
+                                        <span>{t('movement_intensity')}</span>
                                     </div>
                                     <div className="flex h-16 items-end justify-center space-x-1">
                                         {[...Array(30)].map((_, i) => (
@@ -479,17 +479,17 @@ export const SleepTracker: React.FC<SleepTrackerProps> = ({ onClose, onSaveSessi
                                 onClick={startTracking}
                                 className="w-full py-6 bg-cyan-600 hover:bg-cyan-500 rounded-[2rem] text-xl font-bold shadow-[0_0_40px_rgba(6,182,212,0.4)] transition-all active:scale-95"
                             >
-                                Start Sleep Mode
+                                {t('start_sleep_mode')}
                             </button>
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <p className="text-center text-xs text-slate-500">Hold button to end sleep</p>
+                            <p className="text-center text-xs text-slate-500">{t('hold_to_end')}</p>
                             <button 
                                 onClick={stopTracking}
                                 className="w-full py-6 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-[2rem] text-xl font-bold transition-all active:scale-95"
                             >
-                                I'm Awake
+                                {t('im_awake')}
                             </button>
                         </div>
                     )}

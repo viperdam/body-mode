@@ -35,7 +35,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, isDarkMode, toggleThem
                 try {
                     onImportData(event.target.result as string);
                 } catch (error) {
-                    alert("Invalid backup file.");
+                    alert(t('invalid_backup'));
                 }
             }
         };
@@ -107,7 +107,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, isDarkMode, toggleThem
               </div>
               <div>
                   <span className="font-medium block">{t('smart_reminders')}</span>
-                  <span className="text-xs text-slate-400">{notifPermission === 'granted' ? 'Active' : 'Permisson required'}</span>
+                  <span className="text-xs text-slate-400">{notifPermission === 'granted' ? t('active_status') : t('permission_required')}</span>
               </div>
             </div>
             {notifPermission !== 'granted' && (
@@ -141,7 +141,7 @@ export const Settings: React.FC<SettingsProps> = ({ user, isDarkMode, toggleThem
             <Button variant="outline" fullWidth onClick={onLogout} className="border-red-200 text-red-500 hover:bg-red-50 dark:border-red-900/30 dark:text-red-400 dark:hover:bg-red-900/20">
                 {t('sign_out')}
             </Button>
-            <p className="text-center text-xs text-slate-400 mt-4">Version 2.8.1 (Global Edition)</p>
+            <p className="text-center text-xs text-slate-400 mt-4">{t('version_label')} 2.8.1</p>
         </div>
       </div>
     </div>

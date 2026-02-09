@@ -61,12 +61,30 @@ deployment_log.txt
 test_api*.json
 test_final.json
 
-# ===== Mobile app (separate repo) =====
-mobile/
+# ===== Mobile app - include source, exclude build artifacts =====
+mobile/node_modules/
+mobile/.expo/
+mobile/android/
+mobile/ios/
+mobile/coverage/
+mobile/.gradle/
 
-# ===== Gemini brain files =====
+# ===== Secrets & Keys =====
+keystore
+keystore.txt
+google-services.json
+tmp_en_keys.json
+
+# ===== Temp Claude/Gemini working dirs =====
+tmpclaude-*
 .gemini/
 .claude/
+
+# ===== Play Store assets (large images) =====
+play store/
+
+# ===== Tools =====
+tools/
 
 # ===== OS files =====
 Thumbs.db

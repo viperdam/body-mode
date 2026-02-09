@@ -39,6 +39,98 @@ const ALLOWED_MODELS = [
   'gemini-2.0-flash-exp',
   'gemini-2.0-flash-001',
 ];
+const MAX_UPLOAD_BYTES = 1000 * 1024 * 1024;
+const FILE_POLL_INTERVAL_MS = 1000;
+const FILE_POLL_MAX_ATTEMPTS = 15;
+
+const estimateBytesFromBase64 = (dataBase64) => {
+  if (!dataBase64 || typeof dataBase64 !== 'string') return 0;
+  const padding = dataBase64.endsWith('==') ? 2 : dataBase64.endsWith('=') ? 1 : 0;
+  return Math.max(0, Math.floor((dataBase64.length * 3) / 4) - padding);
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const uploadMedia = async (apiKey, upload) => {
+  const { dataBase64, mimeType, fileName } = upload;
+  const buffer = Buffer.from(dataBase64, 'base64');
+  const endpoint = `https://generativelanguage.googleapis.com/upload/v1beta/files?key=${apiKey}`;
+
+  console.log(`[Gemini Proxy] Uploading media (${buffer.length} bytes, ${mimeType})`);
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'X-Goog-Upload-Protocol': 'raw',
+      'X-Goog-Upload-File-Name': fileName || 'upload',
+      'Content-Type': mimeType || 'application/octet-stream',
+    },
+    body: buffer,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`[Gemini Proxy] Upload error ${response.status}:`, errorText);
+    throw new Error(`Gemini upload error (${response.status}): ${errorText}`);
+  }
+
+  const result = await response.json();
+  return result.file || result;
+};
+
+const waitForFileActive = async (apiKey, fileName) => {
+  const endpoint = `${GEMINI_API_BASE}/${fileName}?key=${apiKey}`;
+  let lastState = 'UNKNOWN';
+
+  for (let attempt = 0; attempt < FILE_POLL_MAX_ATTEMPTS; attempt += 1) {
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Gemini file status error (${response.status}): ${errorText}`);
+    }
+
+    const result = await response.json();
+    const file = result.file || result;
+    const state = file.state || 'ACTIVE';
+    lastState = state;
+
+    if (state === 'ACTIVE') {
+      return file;
+    }
+
+    if (state === 'FAILED') {
+      throw new Error('Gemini file processing failed');
+    }
+
+    await sleep(FILE_POLL_INTERVAL_MS);
+  }
+
+  throw new Error(`Timed out waiting for file to become ACTIVE (last state: ${lastState})`);
+};
+
+const injectFileData = (contents, fileUri, mimeType) => {
+  const filePart = { fileData: { fileUri, mimeType } };
+
+  if (typeof contents === 'string') {
+    return [{ role: 'user', parts: [filePart, { text: contents }] }];
+  }
+
+  if (Array.isArray(contents)) {
+    if (!contents.length) {
+      return [{ role: 'user', parts: [filePart] }];
+    }
+
+    const [first, ...rest] = contents;
+    const parts = Array.isArray(first?.parts) ? [filePart, ...first.parts] : [filePart];
+    return [{ ...first, parts }, ...rest];
+  }
+
+  if (contents && Array.isArray(contents.parts)) {
+    return { ...contents, parts: [filePart, ...contents.parts] };
+  }
+
+  throw new Error('Invalid contents format for media upload');
+};
 
 /**
  * Validate request to prevent abuse
@@ -52,6 +144,20 @@ function validateRequest(body) {
   // Check model (optional - will use default if not provided)
   if (body.model && !ALLOWED_MODELS.includes(body.model)) {
     return { valid: false, error: `Invalid model. Allowed: ${ALLOWED_MODELS.join(', ')}` };
+  }
+
+  if (body.upload) {
+    if (typeof body.upload.dataBase64 !== 'string' || !body.upload.dataBase64.length) {
+      return { valid: false, error: 'Missing required field: upload.dataBase64' };
+    }
+    if (typeof body.upload.mimeType !== 'string' || !body.upload.mimeType.length) {
+      return { valid: false, error: 'Missing required field: upload.mimeType' };
+    }
+
+    const uploadBytes = estimateBytesFromBase64(body.upload.dataBase64);
+    if (uploadBytes > MAX_UPLOAD_BYTES) {
+      return { valid: false, error: `Upload too large. Maximum ${Math.round(MAX_UPLOAD_BYTES / (1024 * 1024))}MB.` };
+    }
   }
 
   // Basic size check to prevent massive requests
@@ -140,6 +246,19 @@ async function callGeminiAPI(apiKey, model, contents, config = {}) {
  * Main handler function
  */
 exports.handler = async (event) => {
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: '',
+    };
+  }
+
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
@@ -151,19 +270,6 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Headers': 'Content-Type',
       },
       body: JSON.stringify({ error: 'Method not allowed. Use POST.' }),
-    };
-  }
-
-  // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-      body: '',
     };
   }
 
@@ -203,8 +309,24 @@ exports.handler = async (event) => {
 
     // Extract parameters
     const model = body.model || 'gemini-3-flash-preview'; // Default model
-    const contents = body.contents;
+    let contents = body.contents;
     const config = body.config || {};
+
+    if (body.upload) {
+      const uploadResult = await uploadMedia(apiKey, body.upload);
+      if (!uploadResult?.name) {
+        throw new Error('Gemini upload did not return a file name');
+      }
+
+      const file = await waitForFileActive(apiKey, uploadResult.name);
+      const fileUri = uploadResult.uri || file.uri || uploadResult.fileUri || file.name;
+      if (!fileUri) {
+        throw new Error('Gemini upload did not return a file URI');
+      }
+
+      const uploadMimeType = uploadResult.mimeType || body.upload.mimeType;
+      contents = injectFileData(contents, fileUri, uploadMimeType);
+    }
 
     // Call Gemini API
     const result = await callGeminiAPI(apiKey, model, contents, config);

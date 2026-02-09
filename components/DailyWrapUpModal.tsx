@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { DailyWrapUp } from '../types';
 import { Button } from './Button';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface DailyWrapUpModalProps {
     data: DailyWrapUp;
@@ -9,6 +10,7 @@ interface DailyWrapUpModalProps {
 }
 
 export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClose }) => {
+    const { t } = useLanguage();
     const [step, setStep] = useState(0);
     const [userRating, setUserRating] = useState(0);
 
@@ -33,13 +35,13 @@ export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClos
                         </h1>
                     </div>
                     
-                    <h2 className="text-3xl font-bold tracking-tight">Day Complete!</h2>
+                    <h2 className="text-3xl font-bold tracking-tight">{t('day_complete')}</h2>
                     <p className="text-slate-400 max-w-xs mx-auto text-lg leading-relaxed">
                         "{data.summary}"
                     </p>
 
                     <Button onClick={() => setStep(1)} className="bg-white text-black hover:bg-slate-200 mt-8 px-10 py-4 text-xl rounded-full">
-                        See Details →
+                        {t('see_details')} →
                     </Button>
                 </div>
             </div>
@@ -51,8 +53,8 @@ export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClos
         return (
              <div className="fixed inset-0 z-[60] bg-slate-950 flex flex-col p-6 animate-fade-in text-white overflow-hidden">
                 <div className="mt-10 mb-6">
-                    <h2 className="text-3xl font-bold mb-2">Plan vs Reality</h2>
-                    <p className="text-slate-400">Here is how you did today.</p>
+                    <h2 className="text-3xl font-bold mb-2">{t('plan_vs_reality')}</h2>
+                    <p className="text-slate-400">{t('how_you_did')}</p>
                 </div>
 
                 <div className="flex-1 overflow-y-auto space-y-4 pr-2 no-scrollbar">
@@ -76,13 +78,13 @@ export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClos
                 </div>
                 
                 <div className="mt-4 bg-indigo-900/30 border border-indigo-500/30 p-5 rounded-2xl">
-                    <span className="text-xs font-bold text-indigo-300 uppercase">Tomorrow's Focus</span>
+                    <span className="text-xs font-bold text-indigo-300 uppercase">{t('tomorrow_focus')}</span>
                     <p className="font-bold text-white text-lg mt-1">{data.tomorrowFocus}</p>
                 </div>
 
                 <div className="mt-6">
                     <Button fullWidth onClick={() => setStep(2)} className="bg-indigo-600 text-white">
-                        Next
+                        {t('next')}
                     </Button>
                 </div>
              </div>
@@ -93,8 +95,8 @@ export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClos
     return (
         <div className="fixed inset-0 z-[60] bg-slate-900 flex flex-col items-center justify-center p-6 animate-fade-in text-white">
              <div className="text-center space-y-8">
-                 <h2 className="text-3xl font-bold">How do you feel?</h2>
-                 <p className="text-slate-400">Rate your day to close the loop.</p>
+                 <h2 className="text-3xl font-bold">{t('how_feel')}</h2>
+                 <p className="text-slate-400">{t('rate_day')}</p>
                  
                  <div className="flex space-x-2 justify-center">
                      {[1, 2, 3, 4, 5].map(star => (
@@ -109,7 +111,7 @@ export const DailyWrapUpModal: React.FC<DailyWrapUpModalProps> = ({ data, onClos
                  </div>
                  
                  {userRating > 0 && (
-                     <p className="text-emerald-400 font-bold animate-fade-in">Saved!</p>
+                     <p className="text-emerald-400 font-bold animate-fade-in">{t('saved')}</p>
                  )}
              </div>
         </div>

@@ -2,13 +2,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MAX_ENERGY } from '../types';
 
+type AdResult = 'rewarded' | 'failed' | 'skipped';
+
+interface AdCallbacks {
+  onReward?: () => void;
+  onFail?: () => void;
+}
+
 interface EnergyContextType {
   energy: number;
   consumeEnergy: (amount: number) => boolean;
   rechargeEnergy: () => void;
   isAdOpen: boolean;
-  triggerAd: (onSuccess?: () => void) => void;
-  closeAd: (success: boolean) => void;
+  triggerAd: (callbacks?: AdCallbacks) => void;
+  closeAd: (result: AdResult) => void;
 }
 
 const EnergyContext = createContext<EnergyContextType>({
@@ -27,7 +34,7 @@ export const EnergyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   });
 
   const [isAdOpen, setIsAdOpen] = useState(false);
-  const [adSuccessCallback, setAdSuccessCallback] = useState<(() => void) | null>(null);
+  const [adCallbacks, setAdCallbacks] = useState<AdCallbacks | null>(null);
 
   useEffect(() => {
       localStorage.setItem('ls_energy', energy.toString());
@@ -46,26 +53,20 @@ export const EnergyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setEnergy(MAX_ENERGY);
   };
 
-  const triggerAd = (onSuccess?: () => void) => {
-      if (onSuccess) {
-          setAdSuccessCallback(() => onSuccess);
-      } else {
-          setAdSuccessCallback(null);
-      }
+  const triggerAd = (callbacks?: AdCallbacks) => {
+      setAdCallbacks(callbacks || null);
       setIsAdOpen(true);
   };
 
-  const closeAd = (success: boolean) => {
+  const closeAd = (result: AdResult) => {
       setIsAdOpen(false);
-      if (success) {
+      if (result === 'rewarded') {
           rechargeEnergy();
-          if (adSuccessCallback) {
-              adSuccessCallback();
-              setAdSuccessCallback(null);
-          }
-      } else {
-          setAdSuccessCallback(null);
+          adCallbacks?.onReward?.();
+      } else if (result === 'failed') {
+          adCallbacks?.onFail?.();
       }
+      setAdCallbacks(null);
   };
 
   return (

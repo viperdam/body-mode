@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.viperdam.bodymode",
+      "sha256_cert_fingerprints": [
+        "3C:BE:4E:45:B3:FD:3F:F8:FB:AD:1C:84:E5:1E:F0:F8:38:F5:14:89:7D:99:82:0E:67:06:F7:23:0F:C5:C4:18"
+      ]
+    }
+  }
+]

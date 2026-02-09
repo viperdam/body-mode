@@ -4,6 +4,7 @@ import { UserProfile, ChatMessage, FoodLogEntry, MoodLog, WeightLogEntry, AppCon
 import { createChatSession } from '../services/geminiService';
 import { Chat } from '@google/genai';
 import { useEnergy } from '../contexts/EnergyContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface AICoachProps {
   user: UserProfile;
@@ -17,6 +18,7 @@ interface AICoachProps {
 
 export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory, weightHistory, appContext, dailyPlan, onBack }) => {
   const { consumeEnergy, triggerAd } = useEnergy();
+  const { t } = useLanguage();
   const [chatMode, setChatMode] = useState<'initial' | 'personal' | 'general'>('initial');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -68,10 +70,15 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
 
     // GATE: Check Energy
     if (!consumeEnergy(ENERGY_COSTS.COACH_CHAT)) {
-        triggerAd(() => {
-            // After Ad, user must click send again or we can auto-send.
-            // Let's auto-send for better UX
-            performSend();
+        triggerAd({
+            onReward: () => {
+                // After Ad, auto-send for better UX
+                performSend();
+            },
+            onFail: () => {
+                // Ad failed; continue without recharge, energy unchanged
+                performSend();
+            }
         });
         return;
     }
@@ -134,7 +141,7 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
             <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
           </div>
           <div>
-            <h2 className="font-bold text-slate-900 dark:text-white text-lg">Coach FitLife</h2>
+            <h2 className="font-bold text-slate-900 dark:text-white text-lg">{t('coach_name')}</h2>
             <div className="flex items-center space-x-1.5">
               <span className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Synced: {appContext.weather.temp}°C {appContext.weather.condition}</span>
             </div>
@@ -147,8 +154,8 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
           <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8 animate-fade-in">
               <div className="text-center space-y-2">
                   <div className="text-6xl mb-4">👋</div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">How can I help you today?</h2>
-                  <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto">Choose a mode to start our conversation.</p>
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t('coach_greeting')}</h2>
+                  <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto">{t('coach_choose_mode')}</p>
               </div>
 
               <div className="w-full max-w-sm space-y-4">
@@ -158,9 +165,9 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
                   >
                       <div className="absolute right-0 top-0 w-24 h-24 bg-indigo-50 dark:bg-indigo-900/20 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                       <span className="text-3xl mb-2 block">👤</span>
-                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">Personal Advice</h3>
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">{t('personal_advice')}</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                          Uses your Profile, Food Logs, and Today's Plan to give specific guidance.
+                          {t('personal_advice_desc')}
                       </p>
                   </button>
 
@@ -170,9 +177,9 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
                   >
                        <div className="absolute right-0 top-0 w-24 h-24 bg-emerald-50 dark:bg-emerald-900/20 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                       <span className="text-3xl mb-2 block">🌍</span>
-                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">General Question</h3>
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">{t('general_question')}</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                          Ask about nutrition science or workouts without using your personal data.
+                          {t('general_question_desc')}
                       </p>
                   </button>
               </div>
@@ -231,7 +238,7 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleSend()}
-                    placeholder="Type your message..."
+                    placeholder={t('type_message')}
                     className="flex-1 py-3 outline-none text-slate-800 dark:text-white bg-transparent placeholder:text-slate-400"
                     autoFocus
                 />
@@ -244,7 +251,7 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
                 </button>
              </div>
              <p className="text-center text-[10px] text-slate-500 mt-2 font-bold uppercase tracking-widest">
-                Chat Cost: {ENERGY_COSTS.COACH_CHAT}% Energy
+                {t('chat_cost')}: {ENERGY_COSTS.COACH_CHAT}% {t('energy')}
              </p>
           </div>
       )}

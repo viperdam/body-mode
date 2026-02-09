@@ -2,9 +2,9 @@
 # This configures serverless functions to securely proxy Gemini API calls
 
 [build]
-  # Skip build - static site with serverless functions
-  command = ""
-  publish = "public"
+  # Build the React app with Vite (public/ files auto-copied to dist/)
+  command = "npm run build"
+  publish = "dist"
 
 [functions]
   # Serverless functions directory
@@ -18,8 +18,27 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+[[redirects]]
+  # SPA fallback - serve index.html for all non-file routes
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
 [context.production.environment]
   NODE_VERSION = "18"
 
 [context.dev.environment]
   NODE_VERSION = "18"
+
+# Headers for .well-known files (Deep Link verification)
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type = "application/json"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
+    Access-Control-Allow-Origin = "*"

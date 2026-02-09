@@ -1,115 +1,128 @@
+// Body Mode - Web App Types
+// Self-contained type definitions for the web demo version
 
 export interface UserProfile {
-  name: string;
-  avatarId: string;
-  age: number;
-  gender: 'male' | 'female';
-  weight: number; // Current weight
-  height: number; // cm
-  
-  // New: Culinary Identity (Heritage vs Location)
-  culinaryIdentity: {
-      origin: string; // e.g. "Lebanese", "Mexican", "Japanese"
-      residence: string; // e.g. "Berlin", "Dubai", "New York"
-  };
-
-  // New Demographics
-  maritalStatus: 'single' | 'married' | 'partner';
-  childrenCount: number;
-  
-  // Health & Medical Context (AI Powered)
-  medicalProfile: {
-      conditions: string[]; // e.g. "Diabetes Type 2", "Fibromyalgia"
-      medications: string[]; // e.g. "Insulin", "Antidepressants"
-      injuries: string[]; // e.g. "Bad knee"
-      currentStatus: 'healthy' | 'sick_flu' | 'recovering';
-  };
-
-  // Goal Specifics
-  goal: 'lose' | 'maintain' | 'gain';
-  goalWeight?: number; // New: User defined target weight
-  targetDate?: string; // New: User defined target date (YYYY-MM-DD)
-  planIntensity: 'slow' | 'normal' | 'aggressive';
-  
-  // AI Calculated Metrics (Not hardcoded anymore)
-  dailyCalorieTarget: number;
-  calculatedIdealWeight: number;
-  projectedWeeks: number;
-  
-  // AI Generated Goals
-  weeklyGoalSummary?: string; // e.g. "Lose 0.5kg, Walk 40k steps"
-  monthlyGoalSummary?: string; // e.g. "Stabilize insulin levels, Drop 2% Body Fat"
-
-  activityLevel: 'sedentary' | 'light' | 'moderate' | 'active';
-  
-  // Infinity Memory Fields
-  historySummary?: string;
-  lastSummaryDate?: number;
-  lastWeightCheck?: number;
-
-  workProfile: {
-    type: 'fixed_9_5' | 'night_shift' | 'rotating' | 'flexible' | 'unemployed';
-    intensity: 'desk' | 'standing' | 'heavy_labor';
-    hours?: { start: string; end: string }; 
-    durationHours?: number; 
-  };
-  sleepRoutine: {
-    isConsistent: boolean;
-    targetWakeTime?: string;
-    targetBedTime?: string;
-    targetDurationHours?: number; 
-    wakeWindowMinutes: number;
-  };
+    name: string;
+    avatarId: string;
+    age: number;
+    gender: 'male' | 'female';
+    weight: number;
+    height: number;
+    culinaryIdentity: {
+        origin: string;
+        residence: string;
+    };
+    maritalStatus: 'single' | 'married' | 'partner';
+    childrenCount: number;
+    medicalProfile: {
+        conditions: string[];
+        medications: string[];
+        injuries: string[];
+        currentStatus: 'healthy' | 'sick_flu' | 'recovering';
+    };
+    dietaryPreferences?: {
+        restrictions: string[];
+        allergies: string[];
+        dislikedFoods: string[];
+    };
+    fitnessProfile?: {
+        experienceLevel: 'beginner' | 'intermediate' | 'advanced';
+        preferredActivities: string[];
+        equipmentAccess: 'none' | 'basic_home' | 'full_gym';
+        availableMinutesPerDay?: number;
+    };
+    mealPattern?: {
+        mealsPerDay?: number;
+        mealTimes?: string[];
+        typicalMeals?: string[];
+        lateNightEating?: boolean;
+    };
+    habits?: {
+        smoking?: string;
+        alcohol?: string;
+        vaping?: string;
+        sugarCravings?: string;
+        caffeine?: string;
+        otherHabits?: string[];
+    };
+    goal: 'lose' | 'maintain' | 'gain';
+    goalWeight?: number;
+    targetDate?: string;
+    planIntensity: 'slow' | 'normal' | 'aggressive';
+    dailyCalorieTarget: number;
+    dailyProteinTarget?: number;
+    dailyWaterTargetMl?: number;
+    calculatedIdealWeight: number;
+    projectedWeeks: number;
+    weeklyGoalSummary?: string;
+    monthlyGoalSummary?: string;
+    activityLevel: 'sedentary' | 'light' | 'moderate' | 'active';
+    historySummary?: string;
+    lastSummaryDate?: number;
+    lastWeightCheck?: number;
+    workProfile: {
+        type: 'fixed_9_5' | 'night_shift' | 'rotating' | 'flexible' | 'unemployed';
+        intensity: 'desk' | 'standing' | 'heavy_labor';
+        role?: string;
+        industry?: string;
+        commuteType?: string;
+        hours?: { start?: string; end?: string };
+        durationHours?: number;
+    };
+    sleepRoutine: {
+        isConsistent: boolean;
+        targetWakeTime?: string;
+        targetBedTime?: string;
+        targetDurationHours?: number;
+        wakeWindowMinutes: number;
+        lastUpdatedAt?: number;
+        qualityRating?: 1 | 2 | 3 | 4 | 5;
+        sleepIssues?: string[];
+    };
 }
 
 export interface MacroNutrients {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  // Added Micros for AI analysis
-  vitamins?: string[]; // e.g. ["Vitamin C: High", "Iron: Low"]
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    vitamins?: string[];
 }
 
 export interface FoodAnalysisResult {
-  foodName: string;
-  description: string; // New field
-  ingredients: string[]; // New field
-  macros: MacroNutrients;
-  estimatedWeightGrams?: number;
-  confidence: string; // High, Medium, Low
-  healthGrade: 'A' | 'B' | 'C' | 'D' | 'F';
-  advice: string;
+    foodName: string;
+    description: string;
+    ingredients: string[];
+    macros: MacroNutrients;
+    estimatedWeightGrams?: number;
+    confidence: string;
+    healthGrade: 'A' | 'B' | 'C' | 'D' | 'F';
+    advice: string;
 }
 
 export interface FoodLogEntry {
-  id: string;
-  timestamp: number;
-  food: FoodAnalysisResult;
+    id: string;
+    timestamp: number;
+    planItemId?: string;
+    source?: string;
+    food: FoodAnalysisResult;
 }
 
-// NEW: Activity Log
 export interface ActivityLogEntry {
-  id: string;
-  timestamp: number;
-  name: string; // e.g. "Running", "Gym", "Yoga"
-  durationMinutes: number;
-  caloriesBurned: number;
-  intensity: 'low' | 'moderate' | 'high';
-  notes?: string;
+    id: string;
+    timestamp: number;
+    planItemId?: string;
+    name: string;
+    durationMinutes: number;
+    caloriesBurned: number;
+    intensity: 'low' | 'moderate' | 'high';
+    notes?: string;
 }
 
 export interface WeightLogEntry {
-  id: string;
-  timestamp: number;
-  weight: number;
-}
-
-export interface ChatMessage {
-  id: string;
-  role: 'user' | 'model';
-  text: string;
-  timestamp: number;
+    id: string;
+    timestamp: number;
+    weight: number;
 }
 
 export type ViewState = 'welcome' | 'onboarding' | 'dashboard' | 'camera' | 'coach' | 'profile' | 'settings' | 'sleep' | 'smart-fridge';
@@ -117,64 +130,87 @@ export type ViewState = 'welcome' | 'onboarding' | 'dashboard' | 'camera' | 'coa
 export type MoodType = 'happy' | 'energetic' | 'neutral' | 'stressed' | 'sad';
 
 export interface MoodLog {
-  id: string;
-  timestamp: number;
-  mood: MoodType;
-  score: number; // 1-5 for visualization
-}
-
-export interface DailyWaterLog {
-  date: string; // ISO Date string YYYY-MM-DD
-  amount: number; // ml
+    id: string;
+    timestamp: number;
+    mood: MoodType;
+    score: number;
 }
 
 export interface PlanItem {
-  id: string;
-  time: string; // "14:00"
-  type: 'meal' | 'workout' | 'hydration' | 'sleep' | 'work_break';
-  title: string;
-  description: string;
-  completed: boolean;
-  skipped?: boolean;
-  snoozedUntil?: number; // Timestamp if snoozed
-  linkedAction?: 'log_food' | 'start_sleep' | 'log_water'; // Action to trigger when clicked
-  reactionTimeSeconds?: number; // Time taken to respond to notification
-  priority?: 'high' | 'medium' | 'low'; // NEW: For Context Gatekeeper
+    id: string;
+    time: string;
+    type: 'meal' | 'workout' | 'hydration' | 'sleep' | 'work_break';
+    title: string;
+    description: string;
+    completed: boolean;
+    skipped?: boolean;
+    scheduledAt?: number;
+    completedAt?: number;
+    skippedAt?: number;
+    missed?: boolean;
+    missedAt?: number;
+    snoozedUntil?: number;
+    linkedAction?: 'log_food' | 'start_sleep' | 'log_water';
+    reactionTimeSeconds?: number;
+    priority?: 'high' | 'medium' | 'low';
 }
 
 export interface DailyPlan {
-  date: string; // YYYY-MM-DD
-  summary: string; // Short motivational summary for the day
-  items: PlanItem[];
-  // NEW: Daily Bio-Context Snapshot
-  bioLoadSnapshot?: {
-      neuralBattery: number; // 0-100 (Mental Energy)
-      hormonalStress: 'low' | 'moderate' | 'high'; // Cortisol indicator
-      physicalRecovery: number; // 0-100
-  }
+    date: string;
+    summary: string;
+    items: PlanItem[];
+    bioLoadSnapshot?: {
+        neuralBattery: number;
+        hormonalStress: 'low' | 'moderate' | 'high';
+        physicalRecovery: number;
+    };
+    createdAt?: number;
+    updatedAt?: number;
+    generatedAt?: number;
+    source?: string;
+}
+
+export interface ChatMessage {
+    id: string;
+    role: 'user' | 'model';
+    text: string;
+    timestamp: number;
 }
 
 export interface DailyWrapUp {
-    date: string; // YYYY-MM-DD
-    aiScore: number; // 1-10 score based on adherence
-    summary: string; // Text summary
+    date: string;
+    aiScore: number;
+    summary: string;
     comparison: {
-        category: string; // e.g. "Calories", "Workout", "Sleep"
+        category: string;
         planned: string;
         actual: string;
         status: 'hit' | 'miss' | 'partial';
     }[];
     tomorrowFocus: string;
-    userRating?: number; // 1-5 Star rating from user
+    userRating?: number;
 }
 
 export interface AppContext {
-  weather: {
-    temp: number;
-    condition: string; // 'Clear', 'Rain', etc.
-    code: number; // WMO code
-  };
-  currentLocation: string;
+    weather: {
+        temp: number;
+        condition: string;
+        code: number;
+    };
+    currentLocation: string;
+    healthData?: HealthContextData;
+}
+
+export interface HealthContextData {
+    steps: number;
+    distance: number;
+    calories: number;
+    sleepMinutes?: number;
+    sleepQuality?: string;
+    latestWeight?: number;
+    heartRateBpm?: number;
+    source?: 'google_fit' | 'apple_health' | 'health_connect' | 'unknown';
+    updatedAt?: number;
 }
 
 export interface SleepSession {
@@ -182,14 +218,14 @@ export interface SleepSession {
     startTime: number;
     endTime: number;
     durationMinutes: number;
-    movementLog: { timestamp: number; intensity: number }[]; // Sampled every minute
-    audioLog: { timestamp: number; level: number }[]; // New: Audio levels
-    efficiencyScore: number; // 0-100
+    movementLog: { timestamp: number; intensity: number }[];
+    audioLog: { timestamp: number; level: number }[];
+    efficiencyScore: number;
     stages: {
         stage: 'Deep' | 'Light' | 'REM' | 'Awake';
-        startTime: string; // HH:MM
-        endTime: string; // HH:MM
-        duration: number; // minutes
+        startTime: string;
+        endTime: string;
+        duration: number;
     }[];
     aiAnalysis: string;
 }
@@ -202,7 +238,7 @@ export interface Recipe {
     ingredientsUsed: string[];
     missingIngredients: string[];
     instructions: string[];
-    chefNote?: string; // Reason why this fits the user's heritage/location
+    chefNote?: string;
 }
 
 export interface FridgeIngredientsResult {
@@ -220,15 +256,14 @@ export interface SavedMeal {
 
 export type Language = 'en' | 'ar' | 'fr' | 'es' | 'hi' | 'de' | 'nl' | 'zh' | 'ja' | 'ko' | 'tr' | 'sw' | 'pt';
 
-// --- NEW: CONTEXT ENGINE TYPES ---
 export type UserContextState = 'idle' | 'walking' | 'running' | 'driving' | 'sleeping' | 'working' | 'unknown';
 
 export interface BioLoadAnalysis {
-    neuralBattery: number; // 0-100 (100 = Fresh, 0 = Burnout)
-    hormonalLoad: number; // 0-100 (Cortisol Proxy)
-    physicalFatigue: number; // 0-100
-    vitaminStatus: string[]; // e.g. ["Possible Magnesium Deficiency", "Low Vitamin D risk"]
-    socialDrain: number; // 0-100 (Impact of family/work)
+    neuralBattery: number;
+    hormonalLoad: number;
+    physicalFatigue: number;
+    vitaminStatus: string[];
+    socialDrain: number;
 }
 
 // --- ENERGY / MONETIZATION SYSTEM ---

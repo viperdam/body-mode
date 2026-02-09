@@ -218,7 +218,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                             
                             {(item?.type === 'meal' || item?.type === 'workout') && (
                                 <Button variant="outline" onClick={handleModifyAction} className="border-cyan-200 text-cyan-600 dark:border-cyan-800 dark:text-cyan-400">
-                                    {item.type === 'meal' ? 'I ate something else...' : 'I did something else...'}
+                                    {item.type === 'meal' ? t('ate_something_else') : t('did_something_else')}
                                 </Button>
                             )}
 
@@ -238,8 +238,8 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                 {mode === 'unplanned_fork' && (
                     <>
                         <div className="text-center mb-6">
-                            <h3 className="font-bold text-lg dark:text-white">Reality Check</h3>
-                            <p className="text-slate-500 text-sm">What just happened?</p>
+                            <h3 className="font-bold text-lg dark:text-white">{t('reality_check')}</h3>
+                            <p className="text-slate-500 text-sm">{t('what_happened')}</p>
                         </div>
                         <div className="space-y-4">
                             <button 
@@ -248,8 +248,8 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                             >
                                 <span className="text-3xl">🍫</span>
                                 <div className="text-left rtl:text-right">
-                                    <span className="block font-bold text-orange-900 dark:text-orange-100">I Ate Something</span>
-                                    <span className="text-xs text-orange-700/60 dark:text-orange-300/60">Snickers, Snack, Extra Meal...</span>
+                                    <span className="block font-bold text-orange-900 dark:text-orange-100">{t('i_ate_something')}</span>
+                                    <span className="text-xs text-orange-700/60 dark:text-orange-300/60">{t('i_ate_examples')}</span>
                                 </div>
                             </button>
 
@@ -259,8 +259,8 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                             >
                                 <span className="text-3xl">🏃‍♂️</span>
                                 <div className="text-left rtl:text-right">
-                                    <span className="block font-bold text-cyan-900 dark:text-cyan-100">I Moved</span>
-                                    <span className="text-xs text-cyan-700/60 dark:text-cyan-300/60">Walk, Gym, Cleaning...</span>
+                                    <span className="block font-bold text-cyan-900 dark:text-cyan-100">{t('i_moved')}</span>
+                                    <span className="text-xs text-cyan-700/60 dark:text-cyan-300/60">{t('i_moved_examples')}</span>
                                 </div>
                             </button>
                         </div>
@@ -281,7 +281,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                                     onClick={() => onSnooze(mins)}
                                     className="p-4 rounded-xl border-2 border-slate-100 dark:border-slate-700 font-bold hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 dark:text-white transition-all"
                                 >
-                                    {mins} min
+                                    {mins} {t('min_unit')}
                                 </button>
                             ))}
                         </div>
@@ -293,12 +293,12 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                 {mode === 'log_activity_input' && (
                      <>
                         <div className="text-center mb-6">
-                            <h3 className="font-bold text-lg dark:text-white">Log Activity</h3>
+                            <h3 className="font-bold text-lg dark:text-white">{t('log_activity')}</h3>
                         </div>
                         
                         <div className="space-y-4 mb-6">
                              <div>
-                                <label className="text-xs font-bold text-slate-400 mb-1 block">Activity Name</label>
+                                <label className="text-xs font-bold text-slate-400 mb-1 block">{t('activity_name')}</label>
                                 <input 
                                     type="text" 
                                     className="w-full p-3 bg-slate-50 dark:bg-slate-800 rounded-xl outline-none border border-transparent focus:border-cyan-500 dark:text-white"
@@ -309,7 +309,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                              </div>
 
                              <div>
-                                <label className="text-xs font-bold text-slate-400 mb-1 block">Duration (Minutes)</label>
+                                <label className="text-xs font-bold text-slate-400 mb-1 block">{t('duration_minutes')}</label>
                                 <div className="flex items-center space-x-2">
                                     <button onClick={() => setActivityDuration(Math.max(10, activityDuration - 10))} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">-</button>
                                     <input 
@@ -323,7 +323,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                              </div>
 
                              <div>
-                                <label className="text-xs font-bold text-slate-400 mb-2 block">Intensity</label>
+                                <label className="text-xs font-bold text-slate-400 mb-2 block">{t('intensity')}</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {['low', 'moderate', 'high'].map(lvl => (
                                         <button 
@@ -339,7 +339,7 @@ export const ActionModal: React.FC<ActionModalProps> = ({
                         </div>
 
                         <Button fullWidth onClick={submitActivity} className="bg-cyan-600 hover:bg-cyan-500 text-white">
-                            Save Activity
+                            {t('save_activity')}
                         </Button>
                         <Button variant="ghost" fullWidth onClick={() => onClose ? onClose() : setMode('main')} className="mt-2">{t('cancel')}</Button>
                      </>

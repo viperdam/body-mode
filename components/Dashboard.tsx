@@ -132,12 +132,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onGeneratePlan();
       } else {
           // Trigger Ad
-          triggerAd(() => {
-              // On success (Energy recharged)
-              // We could auto-consume here or let user click again.
-              // To make it "Input -> Ad -> Output", we auto-run.
-              // Since recharge sets to 100, we can safely call generation now.
-              onGeneratePlan();
+          triggerAd({
+              onReward: () => {
+                  // On success (Energy recharged)
+                  // To make it "Input -> Ad -> Output", we auto-run.
+                  onGeneratePlan();
+              },
+              onFail: () => {
+                  // Ad failed; continue without recharge, energy unchanged
+                  onGeneratePlan();
+              }
           });
       }
   };
@@ -214,7 +218,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="bg-gradient-to-r from-cyan-900/40 to-teal-900/40 border border-cyan-500/20 p-4 rounded-2xl flex items-start space-x-3">
               <span className="text-xl mt-0.5">🎯</span>
               <div>
-                  <h4 className="text-xs font-bold text-cyan-300 uppercase mb-1">Weekly Mission</h4>
+                  <h4 className="text-xs font-bold text-cyan-300 uppercase mb-1">{t('weekly_mission')}</h4>
                   <p className="text-sm text-white font-medium leading-tight">{user.weeklyGoalSummary}</p>
               </div>
           </div>
@@ -227,7 +231,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex justify-between items-center relative z-10">
             <div>
                 <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${isOverBudget ? 'text-red-400' : 'text-cyan-200'}`}>
-                    {isOverBudget ? 'Over Limit' : t('calories_left')}
+                    {isOverBudget ? t('over_limit') : t('calories_left')}
                 </p>
                 <h2 className={`text-6xl font-black tracking-tighter text-glow ${isOverBudget ? 'text-red-500' : 'text-white'}`}>
                     {Math.round(Math.abs(remainingCalories))}
@@ -235,9 +239,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 
                 {/* Burned / Net Context */}
                 <div className="flex flex-col mt-3 space-y-1">
-                     <span className="text-xs text-slate-400 font-bold">Goal: {target}</span>
+                     <span className="text-xs text-slate-400 font-bold">{t('goal_label')}: {target}</span>
                      {dailyLog.burned > 0 && (
-                         <span className="text-xs text-emerald-400 font-bold">Bonus: +{dailyLog.burned} burned</span>
+                         <span className="text-xs text-emerald-400 font-bold">{t('bonus_burned').replace('{val}', String(dailyLog.burned))}</span>
                      )}
                 </div>
             </div>
@@ -310,7 +314,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                      <span className="text-2xl">🥦</span>
                      <h4 className="font-bold text-white text-sm">{t('fridge')}</h4>
                 </div>
-                <div className="text-xs text-emerald-300 font-medium">Scan Ingredients</div>
+                <div className="text-xs text-emerald-300 font-medium">{t('scan_ingredients')}</div>
             </div>
         )}
 
@@ -320,9 +324,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="absolute right-0 top-0 w-40 h-40 bg-red-500/10 rounded-full -mr-10 -mt-10 blur-3xl group-hover:bg-red-500/20 transition-all"></div>
                 <div className="flex items-center space-x-2 z-10 mb-2">
                      <span className="text-2xl">⚠️</span>
-                     <h4 className="font-bold text-white text-sm">Reality Check</h4>
+                     <h4 className="font-bold text-white text-sm">{t('reality_check')}</h4>
                 </div>
-                <div className="text-xs text-red-300 font-medium">Log Unplanned</div>
+                <div className="text-xs text-red-300 font-medium">{t('log_unplanned')}</div>
             </div>
         )}
 
@@ -384,7 +388,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             onClick={onEndDay}
                             className="w-full py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-300 font-bold tracking-widest uppercase text-xs transition-all active:scale-95"
                         >
-                            End Day & Review
+                            {t('end_day_review')}
                          </button>
                      </div>
                 )}
@@ -401,17 +405,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <p className="text-sm mb-4">Daily plan needs initialization.</p>
-                            <button 
-                                onClick={handleRefinePlan} 
+                            <p className="text-sm mb-4">{t('plan_needs_init')}</p>
+                            <button
+                                onClick={handleRefinePlan}
                                 className="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-2xl text-white font-bold"
                             >
-                                Generate Daily Plan
+                                {t('generate_daily_plan')}
                             </button>
                         </div>
                     )
                 ) : (
-                    <p className="text-sm">No plan data for this date.</p>
+                    <p className="text-sm">{t('no_plan_data')}</p>
                 )}
             </div>
         )}

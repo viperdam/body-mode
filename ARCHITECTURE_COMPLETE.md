@@ -61,6 +61,16 @@ I've analyzed your entire 55+ service, 30+ native module architecture **end-to-e
 
 ## 🏗️ **YOUR NEW ARCHITECTURE**
 
+### **Canonical Storage Ownership (Single Source of Truth)**
+
+| Domain | Canonical Store | Writer | Notes |
+|--------|------------------|--------|-------|
+| **Daily Plan** | AsyncStorage `ls_daily_plan_YYYY-MM-DD` (+ legacy `ls_daily_plan`) | `storageService.set` (plan writes), `planSyncService` for native sync | Plan writes go through storageService; native sync uses `skipPlanSync` to avoid loops |
+| **Sleep State** | Android native (Room + SharedPreferences) | `SleepWakeDetectionService.kt` | JS only mirrors pending/draft events for UI |
+| **Sleep Drafts** | AsyncStorage `ls_sleep_drafts_v1` | `sleepDraftService` | JS only; confirmed by user or native wake |
+| **Overlay Actions** | Android native pending queue | `OverlayWindowService.kt` → `overlayActionService.ts` | JS processes ACK; overlay reschedule after each action |
+| **Onboarding Draft** | AsyncStorage `ls_onboarding_draft` | `OnboardingScreen.tsx` | Migration handles legacy keys |
+
 ### **4-Tier Plan Generation System** (NO Hardcoded Plans!)
 
 ```
