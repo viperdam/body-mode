@@ -1,0 +1,807 @@
+#!/usr/bin/env node
+/**
+ * Manual dashboard translations Part 2 - remaining keys
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const TRANSLATIONS_DIR = path.join(__dirname, '../src/i18n/translations');
+
+const DASHBOARD_TRANSLATIONS = {
+  "dashboard.meal.alt_meal_placeholder": {
+    ar: "وصف الوجبة (مثال: سلمون مشوي مع أرز)",
+    de: "Mahlzeit beschreiben (z.B. gegrillter Lachs mit Reis)",
+    es: "Describe la comida (ej: salmón a la parrilla con arroz)",
+    fr: "Décrivez le repas (ex: saumon grillé avec riz)",
+    hi: "भोजन का वर्णन करें (जैसे: ग्रिल्ड सैल्मन चावल के साथ)",
+    ja: "食事を説明してください（例：グリルサーモンとライス）",
+    ko: "식사를 설명하세요 (예: 구운 연어와 밥)",
+    nl: "Beschrijf maaltijd (bijv. gegrilde zalm met rijst)",
+    pt: "Descreva a refeição (ex: salmão grelhado com arroz)",
+    sw: "Elezea mlo (mfano: samaki wa kuchoma na wali)",
+    tr: "Yemeği tanımlayın (örn: ızgara somon ve pilav)",
+    zh: "描述餐食（例如：烤三文鱼配米饭）"
+  },
+  "dashboard.meal.analyze_save": {
+    ar: "تحليل وحفظ",
+    de: "Analysieren & Speichern",
+    es: "Analizar y guardar",
+    fr: "Analyser et enregistrer",
+    hi: "विश्लेषण और सहेजें",
+    ja: "分析して保存",
+    ko: "분석 및 저장",
+    nl: "Analyseren & Opslaan",
+    pt: "Analisar e salvar",
+    sw: "Changanua na Hifadhi",
+    tr: "Analiz Et ve Kaydet",
+    zh: "分析并保存"
+  },
+  "dashboard.meal.get_recipe": {
+    ar: "الحصول على الوصفة",
+    de: "Rezept holen",
+    es: "Obtener receta",
+    fr: "Obtenir la recette",
+    hi: "रेसिपी प्राप्त करें",
+    ja: "レシピを取得",
+    ko: "레시피 가져오기",
+    nl: "Recept ophalen",
+    pt: "Obter receita",
+    sw: "Pata Mapishi",
+    tr: "Tarif Al",
+    zh: "获取食谱"
+  },
+  "dashboard.meal.log": {
+    ar: "📝 تسجيل",
+    de: "📝 Protokollieren",
+    es: "📝 Registrar",
+    fr: "📝 Enregistrer",
+    hi: "📝 लॉग करें",
+    ja: "📝 記録",
+    ko: "📝 기록",
+    nl: "📝 Loggen",
+    pt: "📝 Registrar",
+    sw: "📝 Rekodi",
+    tr: "📝 Kaydet",
+    zh: "📝 记录"
+  },
+  "dashboard.meal.log_this": {
+    ar: "📝 تسجيل هذا",
+    de: "📝 Dies protokollieren",
+    es: "📝 Registrar esto",
+    fr: "📝 Enregistrer ceci",
+    hi: "📝 इसे लॉग करें",
+    ja: "📝 これを記録",
+    ko: "📝 이것을 기록",
+    nl: "📝 Dit loggen",
+    pt: "📝 Registrar isto",
+    sw: "📝 Rekodi Hii",
+    tr: "📝 Bunu Kaydet",
+    zh: "📝 记录此项"
+  },
+  "dashboard.meal.log_water_amount": {
+    ar: "تسجيل الماء (+%{amount}%{unit})",
+    de: "Wasser protokollieren (+%{amount}%{unit})",
+    es: "Registrar agua (+%{amount}%{unit})",
+    fr: "Enregistrer l'eau (+%{amount}%{unit})",
+    hi: "पानी लॉग करें (+%{amount}%{unit})",
+    ja: "水を記録 (+%{amount}%{unit})",
+    ko: "물 기록 (+%{amount}%{unit})",
+    nl: "Water loggen (+%{amount}%{unit})",
+    pt: "Registrar água (+%{amount}%{unit})",
+    sw: "Rekodi Maji (+%{amount}%{unit})",
+    tr: "Su Kaydet (+%{amount}%{unit})",
+    zh: "记录水 (+%{amount}%{unit})"
+  },
+  "dashboard.meal.log_water_today_only": {
+    ar: "تسجيل الماء (اليوم فقط)",
+    de: "Wasser protokollieren (nur heute)",
+    es: "Registrar agua (solo hoy)",
+    fr: "Enregistrer l'eau (aujourd'hui seulement)",
+    hi: "पानी लॉग करें (केवल आज)",
+    ja: "水を記録（今日のみ）",
+    ko: "물 기록 (오늘만)",
+    nl: "Water loggen (alleen vandaag)",
+    pt: "Registrar água (apenas hoje)",
+    sw: "Rekodi Maji (leo tu)",
+    tr: "Su Kaydet (sadece bugün)",
+    zh: "记录水（仅限今天）"
+  },
+  "dashboard.meal.macros_long": {
+    ar: "السعرات: %{calories} سعرة | البروتين %{protein}غ | الكربوهيدرات %{carbs}غ | الدهون %{fat}غ",
+    de: "Kalorien: %{calories} kcal | Protein %{protein}g | Kohlenhydrate %{carbs}g | Fett %{fat}g",
+    es: "Calorías: %{calories} kcal | Proteína %{protein}g | Carbohidratos %{carbs}g | Grasa %{fat}g",
+    fr: "Calories : %{calories} kcal | Protéines %{protein}g | Glucides %{carbs}g | Lipides %{fat}g",
+    hi: "कैलोरी: %{calories} kcal | प्रोटीन %{protein}g | कार्ब्स %{carbs}g | फैट %{fat}g",
+    ja: "カロリー: %{calories} kcal | タンパク質 %{protein}g | 炭水化物 %{carbs}g | 脂質 %{fat}g",
+    ko: "칼로리: %{calories} kcal | 단백질 %{protein}g | 탄수화물 %{carbs}g | 지방 %{fat}g",
+    nl: "Calorieën: %{calories} kcal | Eiwit %{protein}g | Koolhydraten %{carbs}g | Vet %{fat}g",
+    pt: "Calorias: %{calories} kcal | Proteína %{protein}g | Carboidratos %{carbs}g | Gordura %{fat}g",
+    sw: "Kalori: %{calories} kcal | Protini %{protein}g | Wanga %{carbs}g | Mafuta %{fat}g",
+    tr: "Kalori: %{calories} kcal | Protein %{protein}g | Karbonhidrat %{carbs}g | Yağ %{fat}g",
+    zh: "热量：%{calories} kcal | 蛋白质 %{protein}g | 碳水 %{carbs}g | 脂肪 %{fat}g"
+  },
+  "dashboard.meal.macros_short": {
+    ar: "%{calories} سعرة | ب %{protein}غ | ك %{carbs}غ | د %{fat}غ",
+    de: "%{calories} kcal | E %{protein}g | K %{carbs}g | F %{fat}g",
+    es: "%{calories} kcal | P %{protein}g | C %{carbs}g | G %{fat}g",
+    fr: "%{calories} kcal | P %{protein}g | G %{carbs}g | L %{fat}g",
+    hi: "%{calories} kcal | प्रो %{protein}g | कार्ब %{carbs}g | फैट %{fat}g",
+    ja: "%{calories} kcal | P %{protein}g | C %{carbs}g | F %{fat}g",
+    ko: "%{calories} kcal | 단 %{protein}g | 탄 %{carbs}g | 지 %{fat}g",
+    nl: "%{calories} kcal | E %{protein}g | K %{carbs}g | V %{fat}g",
+    pt: "%{calories} kcal | P %{protein}g | C %{carbs}g | G %{fat}g",
+    sw: "%{calories} kcal | P %{protein}g | W %{carbs}g | M %{fat}g",
+    tr: "%{calories} kcal | P %{protein}g | K %{carbs}g | Y %{fat}g",
+    zh: "%{calories} kcal | 蛋白 %{protein}g | 碳水 %{carbs}g | 脂肪 %{fat}g"
+  },
+  "dashboard.meal.manual_text": {
+    ar: "نص يدوي",
+    de: "Manueller Text",
+    es: "Texto manual",
+    fr: "Texte manuel",
+    hi: "मैन्युअल टेक्स्ट",
+    ja: "手動テキスト",
+    ko: "수동 텍스트",
+    nl: "Handmatige tekst",
+    pt: "Texto manual",
+    sw: "Maandishi ya Mkono",
+    tr: "Manuel Metin",
+    zh: "手动文本"
+  },
+  "dashboard.meal.mark_done": {
+    ar: "تحديد كمكتمل",
+    de: "Als erledigt markieren",
+    es: "Marcar como hecho",
+    fr: "Marquer comme terminé",
+    hi: "पूर्ण के रूप में चिह्नित करें",
+    ja: "完了としてマーク",
+    ko: "완료로 표시",
+    nl: "Markeer als klaar",
+    pt: "Marcar como feito",
+    sw: "Weka Alama Imekamilika",
+    tr: "Tamamlandı Olarak İşaretle",
+    zh: "标记为已完成"
+  },
+  "dashboard.meal.mark_not_done": {
+    ar: "تحديد كغير مكتمل",
+    de: "Als nicht erledigt markieren",
+    es: "Marcar como no hecho",
+    fr: "Marquer comme non terminé",
+    hi: "अपूर्ण के रूप में चिह्नित करें",
+    ja: "未完了としてマーク",
+    ko: "미완료로 표시",
+    nl: "Markeer als niet klaar",
+    pt: "Marcar como não feito",
+    sw: "Weka Alama Haijakamilika",
+    tr: "Tamamlanmadı Olarak İşaretle",
+    zh: "标记为未完成"
+  },
+  "dashboard.meal.preview": {
+    ar: "معاينة",
+    de: "Vorschau",
+    es: "Vista previa",
+    fr: "Aperçu",
+    hi: "पूर्वावलोकन",
+    ja: "プレビュー",
+    ko: "미리보기",
+    nl: "Voorbeeld",
+    pt: "Visualização",
+    sw: "Hakiki",
+    tr: "Önizleme",
+    zh: "预览"
+  },
+  "dashboard.meal.save": {
+    ar: "⭐ حفظ",
+    de: "⭐ Speichern",
+    es: "⭐ Guardar",
+    fr: "⭐ Enregistrer",
+    hi: "⭐ सहेजें",
+    ja: "⭐ 保存",
+    ko: "⭐ 저장",
+    nl: "⭐ Opslaan",
+    pt: "⭐ Salvar",
+    sw: "⭐ Hifadhi",
+    tr: "⭐ Kaydet",
+    zh: "⭐ 保存"
+  },
+  "dashboard.meal.saved_meals": {
+    ar: "الوجبات المحفوظة",
+    de: "Gespeicherte Mahlzeiten",
+    es: "Comidas guardadas",
+    fr: "Repas enregistrés",
+    hi: "सहेजे गए भोजन",
+    ja: "保存した食事",
+    ko: "저장된 식사",
+    nl: "Opgeslagen maaltijden",
+    pt: "Refeições salvas",
+    sw: "Milo Zilizohifadhiwa",
+    tr: "Kaydedilen Yemekler",
+    zh: "已保存的餐食"
+  },
+  "dashboard.meal.scan_camera": {
+    ar: "مسح/كاميرا",
+    de: "Scannen/Kamera",
+    es: "Escanear/Cámara",
+    fr: "Scanner/Caméra",
+    hi: "स्कैन/कैमरा",
+    ja: "スキャン/カメラ",
+    ko: "스캔/카메라",
+    nl: "Scannen/Camera",
+    pt: "Escanear/Câmera",
+    sw: "Changanua/Kamera",
+    tr: "Tara/Kamera",
+    zh: "扫描/相机"
+  },
+  "dashboard.meal.start_sleep_tracker": {
+    ar: "بدء تتبع النوم",
+    de: "Schlaftracker starten",
+    es: "Iniciar seguimiento de sueño",
+    fr: "Démarrer le suivi du sommeil",
+    hi: "स्लीप ट्रैकर शुरू करें",
+    ja: "睡眠トラッカーを開始",
+    ko: "수면 추적기 시작",
+    nl: "Slaaptracker starten",
+    pt: "Iniciar rastreador de sono",
+    sw: "Anza Kifuatiliaji cha Usingizi",
+    tr: "Uyku Takipçisini Başlat",
+    zh: "开始睡眠追踪"
+  },
+  "dashboard.meal.use": {
+    ar: "🔄 استخدام",
+    de: "🔄 Verwenden",
+    es: "🔄 Usar",
+    fr: "🔄 Utiliser",
+    hi: "🔄 उपयोग करें",
+    ja: "🔄 使用",
+    ko: "🔄 사용",
+    nl: "🔄 Gebruiken",
+    pt: "🔄 Usar",
+    sw: "🔄 Tumia",
+    tr: "🔄 Kullan",
+    zh: "🔄 使用"
+  },
+  "dashboard.meal.use_instead": {
+    ar: "🔄 استخدام بدلاً من ذلك",
+    de: "🔄 Stattdessen verwenden",
+    es: "🔄 Usar en su lugar",
+    fr: "🔄 Utiliser à la place",
+    hi: "🔄 इसके बजाय उपयोग करें",
+    ja: "🔄 代わりに使用",
+    ko: "🔄 대신 사용",
+    nl: "🔄 In plaats daarvan gebruiken",
+    pt: "🔄 Usar em vez disso",
+    sw: "🔄 Tumia Badala Yake",
+    tr: "🔄 Bunun Yerine Kullan",
+    zh: "🔄 改用此项"
+  },
+  "dashboard.meal.want_another": {
+    ar: "تريد وجبة أخرى؟",
+    de: "Noch eine Mahlzeit?",
+    es: "¿Quieres otra comida?",
+    fr: "Vous voulez un autre repas ?",
+    hi: "एक और भोजन चाहते हैं?",
+    ja: "別の食事が欲しいですか？",
+    ko: "다른 식사를 원하시나요?",
+    nl: "Nog een maaltijd?",
+    pt: "Quer outra refeição?",
+    sw: "Unataka mlo mwingine?",
+    tr: "Başka bir yemek ister misiniz?",
+    zh: "想要另一餐？"
+  },
+  "dashboard.meal_advice_from_favorites": {
+    ar: "من المفضلة",
+    de: "Aus Favoriten",
+    es: "De favoritos",
+    fr: "Depuis les favoris",
+    hi: "पसंदीदा से",
+    ja: "お気に入りから",
+    ko: "즐겨찾기에서",
+    nl: "Van favorieten",
+    pt: "Dos favoritos",
+    sw: "Kutoka kwa Vipendwa",
+    tr: "Favorilerden",
+    zh: "来自收藏夹"
+  },
+  "dashboard.meal_confidence_high": {
+    ar: "عالية",
+    de: "Hoch",
+    es: "Alta",
+    fr: "Élevée",
+    hi: "उच्च",
+    ja: "高",
+    ko: "높음",
+    nl: "Hoog",
+    pt: "Alta",
+    sw: "Juu",
+    tr: "Yüksek",
+    zh: "高"
+  },
+  "dashboard.no_plan_found": {
+    ar: "لم يتم العثور على خطة",
+    de: "Kein Plan gefunden",
+    es: "No se encontró plan",
+    fr: "Aucun plan trouvé",
+    hi: "कोई योजना नहीं मिली",
+    ja: "プランが見つかりません",
+    ko: "플랜을 찾을 수 없음",
+    nl: "Geen plan gevonden",
+    pt: "Nenhum plano encontrado",
+    sw: "Hakuna Mpango Uliopatikana",
+    tr: "Plan Bulunamadı",
+    zh: "未找到计划"
+  },
+  "dashboard.no_plan_recorded": {
+    ar: "لم يتم تسجيل أي خطة لهذا التاريخ.",
+    de: "Für dieses Datum wurde kein Plan aufgezeichnet.",
+    es: "No se registró ningún plan para esta fecha.",
+    fr: "Aucun plan n'a été enregistré pour cette date.",
+    hi: "इस तारीख के लिए कोई योजना दर्ज नहीं की गई।",
+    ja: "この日付のプランは記録されていません。",
+    ko: "이 날짜에 대한 플랜이 기록되지 않았습니다.",
+    nl: "Er is geen plan geregistreerd voor deze datum.",
+    pt: "Nenhum plano foi registrado para esta data.",
+    sw: "Hakuna mpango uliorekodiwa kwa tarehe hii.",
+    tr: "Bu tarih için plan kaydedilmedi.",
+    zh: "此日期没有记录计划。"
+  },
+  "dashboard.no_plan_today_body": {
+    ar: "قم بإنشاء خطتك للبدء.",
+    de: "Erstelle deinen Plan um loszulegen.",
+    es: "Genera tu plan para comenzar.",
+    fr: "Générez votre plan pour commencer.",
+    hi: "शुरू करने के लिए अपनी योजना बनाएं।",
+    ja: "始めるにはプランを生成してください。",
+    ko: "시작하려면 플랜을 생성하세요.",
+    nl: "Genereer je plan om te beginnen.",
+    pt: "Gere seu plano para começar.",
+    sw: "Tengeneza mpango wako kuanza.",
+    tr: "Başlamak için planınızı oluşturun.",
+    zh: "生成您的计划以开始。"
+  },
+  "dashboard.no_plan_today_title": {
+    ar: "لا توجد خطة بعد",
+    de: "Noch kein Plan",
+    es: "Sin plan todavía",
+    fr: "Pas encore de plan",
+    hi: "अभी तक कोई योजना नहीं",
+    ja: "まだプランがありません",
+    ko: "아직 플랜이 없습니다",
+    nl: "Nog geen plan",
+    pt: "Ainda sem plano",
+    sw: "Hakuna Mpango Bado",
+    tr: "Henüz Plan Yok",
+    zh: "尚无计划"
+  },
+  "dashboard.plan_completion": {
+    ar: "✅ %{completed}/%{total} مكتمل (%{percent}%)",
+    de: "✅ %{completed}/%{total} erledigt (%{percent}%)",
+    es: "✅ %{completed}/%{total} completado (%{percent}%)",
+    fr: "✅ %{completed}/%{total} terminé (%{percent}%)",
+    hi: "✅ %{completed}/%{total} पूर्ण (%{percent}%)",
+    ja: "✅ %{completed}/%{total} 完了 (%{percent}%)",
+    ko: "✅ %{completed}/%{total} 완료 (%{percent}%)",
+    nl: "✅ %{completed}/%{total} voltooid (%{percent}%)",
+    pt: "✅ %{completed}/%{total} concluído (%{percent}%)",
+    sw: "✅ %{completed}/%{total} imekamilika (%{percent}%)",
+    tr: "✅ %{completed}/%{total} tamamlandı (%{percent}%)",
+    zh: "✅ %{completed}/%{total} 已完成 (%{percent}%)"
+  },
+  "dashboard.plan_for_date": {
+    ar: "خطة %{date}",
+    de: "Plan für %{date}",
+    es: "Plan de %{date}",
+    fr: "Plan du %{date}",
+    hi: "%{date} की योजना",
+    ja: "%{date}のプラン",
+    ko: "%{date}의 플랜",
+    nl: "Plan voor %{date}",
+    pt: "Plano de %{date}",
+    sw: "Mpango wa %{date}",
+    tr: "%{date} Planı",
+    zh: "%{date}的计划"
+  },
+  "dashboard.plan_skipped": {
+    ar: "• ⏭️ تم تخطي %{skipped}",
+    de: "• ⏭️ %{skipped} übersprungen",
+    es: "• ⏭️ %{skipped} omitido",
+    fr: "• ⏭️ %{skipped} ignoré",
+    hi: "• ⏭️ %{skipped} छोड़ा गया",
+    ja: "• ⏭️ %{skipped} スキップ",
+    ko: "• ⏭️ %{skipped} 건너뜀",
+    nl: "• ⏭️ %{skipped} overgeslagen",
+    pt: "• ⏭️ %{skipped} pulado",
+    sw: "• ⏭️ %{skipped} imerukwa",
+    tr: "• ⏭️ %{skipped} atlandı",
+    zh: "• ⏭️ 跳过 %{skipped}"
+  },
+  "dashboard.plan_type.hydration": {
+    ar: "الترطيب",
+    de: "Flüssigkeitszufuhr",
+    es: "Hidratación",
+    fr: "Hydratation",
+    hi: "हाइड्रेशन",
+    ja: "水分補給",
+    ko: "수분 섭취",
+    nl: "Hydratatie",
+    pt: "Hidratação",
+    sw: "Maji",
+    tr: "Hidrasyon",
+    zh: "补水"
+  },
+  "dashboard.plan_type.meal": {
+    ar: "وجبة",
+    de: "Mahlzeit",
+    es: "Comida",
+    fr: "Repas",
+    hi: "भोजन",
+    ja: "食事",
+    ko: "식사",
+    nl: "Maaltijd",
+    pt: "Refeição",
+    sw: "Mlo",
+    tr: "Öğün",
+    zh: "餐食"
+  },
+  "dashboard.plan_type.sleep": {
+    ar: "النوم",
+    de: "Schlaf",
+    es: "Sueño",
+    fr: "Sommeil",
+    hi: "नींद",
+    ja: "睡眠",
+    ko: "수면",
+    nl: "Slaap",
+    pt: "Sono",
+    sw: "Usingizi",
+    tr: "Uyku",
+    zh: "睡眠"
+  },
+  "dashboard.plan_type.workout": {
+    ar: "تمرين",
+    de: "Training",
+    es: "Ejercicio",
+    fr: "Entraînement",
+    hi: "वर्कआउट",
+    ja: "ワークアウト",
+    ko: "운동",
+    nl: "Training",
+    pt: "Treino",
+    sw: "Mazoezi",
+    tr: "Egzersiz",
+    zh: "锻炼"
+  },
+  "dashboard.progress_planned": {
+    ar: "%{date} (مخطط)",
+    de: "%{date} (Geplant)",
+    es: "%{date} (Planificado)",
+    fr: "%{date} (Planifié)",
+    hi: "%{date} (नियोजित)",
+    ja: "%{date}（計画済み）",
+    ko: "%{date} (계획됨)",
+    nl: "%{date} (Gepland)",
+    pt: "%{date} (Planejado)",
+    sw: "%{date} (Imepangwa)",
+    tr: "%{date} (Planlandı)",
+    zh: "%{date}（已计划）"
+  },
+  "dashboard.progress_summary": {
+    ar: "ملخص %{date}",
+    de: "%{date} Zusammenfassung",
+    es: "Resumen de %{date}",
+    fr: "Résumé du %{date}",
+    hi: "%{date} सारांश",
+    ja: "%{date} サマリー",
+    ko: "%{date} 요약",
+    nl: "%{date} Samenvatting",
+    pt: "Resumo de %{date}",
+    sw: "Muhtasari wa %{date}",
+    tr: "%{date} Özeti",
+    zh: "%{date} 摘要"
+  },
+  "dashboard.refine_cancel": {
+    ar: "✕ إلغاء",
+    de: "✕ Abbrechen",
+    es: "✕ Cancelar",
+    fr: "✕ Annuler",
+    hi: "✕ रद्द करें",
+    ja: "✕ キャンセル",
+    ko: "✕ 취소",
+    nl: "✕ Annuleren",
+    pt: "✕ Cancelar",
+    sw: "✕ Ghairi",
+    tr: "✕ İptal",
+    zh: "✕ 取消"
+  },
+  "dashboard.refine_placeholder": {
+    ar: "مثال: 'اجعل الغداء أخف'، 'أضف المزيد من البروتين'، 'تخطي تمرين الصباح'",
+    de: "z.B. 'Mach das Mittagessen leichter', 'Füge mehr Protein hinzu', 'Überspringe das Morgentraining'",
+    es: "ej: 'Haz el almuerzo más ligero', 'Añade más proteína', 'Salta el entrenamiento matutino'",
+    fr: "ex: 'Allège le déjeuner', 'Ajoute plus de protéines', 'Saute l'entraînement du matin'",
+    hi: "उदा: 'लंच हल्का करें', 'ज्यादा प्रोटीन जोड़ें', 'सुबह की कसरत छोड़ें'",
+    ja: "例：「ランチを軽くする」「タンパク質を増やす」「朝のワークアウトをスキップ」",
+    ko: "예: '점심을 가볍게', '단백질 추가', '아침 운동 건너뛰기'",
+    nl: "bijv. 'Maak de lunch lichter', 'Voeg meer eiwit toe', 'Sla de ochtendtraining over'",
+    pt: "ex: 'Torne o almoço mais leve', 'Adicione mais proteína', 'Pule o treino matinal'",
+    sw: "mfano: 'Fanya chakula cha mchana chepesi', 'Ongeza protini', 'Ruka mazoezi ya asubuhi'",
+    tr: "örn: 'Öğle yemeğini hafiflet', 'Daha fazla protein ekle', 'Sabah antrenmanını atla'",
+    zh: "例如：'让午餐更清淡'、'增加蛋白质'、'跳过早晨锻炼'"
+  },
+  "dashboard.refine_plan": {
+    ar: "✏️ تحسين الخطة",
+    de: "✏️ Plan verfeinern",
+    es: "✏️ Refinar plan",
+    fr: "✏️ Affiner le plan",
+    hi: "✏️ योजना परिष्कृत करें",
+    ja: "✏️ プランを調整",
+    ko: "✏️ 플랜 수정",
+    nl: "✏️ Plan verfijnen",
+    pt: "✏️ Refinar plano",
+    sw: "✏️ Boresha Mpango",
+    tr: "✏️ Planı İyileştir",
+    zh: "✏️ 优化计划"
+  },
+  "dashboard.refine_prompt": {
+    ar: "ما الذي تريد تغييره؟",
+    de: "Was möchtest du ändern?",
+    es: "¿Qué te gustaría cambiar?",
+    fr: "Qu'aimeriez-vous changer ?",
+    hi: "आप क्या बदलना चाहेंगे?",
+    ja: "何を変更しますか？",
+    ko: "무엇을 변경하시겠습니까?",
+    nl: "Wat wil je veranderen?",
+    pt: "O que você gostaria de mudar?",
+    sw: "Ungependa kubadilisha nini?",
+    tr: "Neyi değiştirmek istersiniz?",
+    zh: "您想更改什么？"
+  },
+  "dashboard.refine_submit": {
+    ar: "🔄 إعادة إنشاء الخطة",
+    de: "🔄 Plan neu erstellen",
+    es: "🔄 Regenerar plan",
+    fr: "🔄 Régénérer le plan",
+    hi: "🔄 योजना पुनः बनाएं",
+    ja: "🔄 プランを再生成",
+    ko: "🔄 플랜 재생성",
+    nl: "🔄 Plan opnieuw genereren",
+    pt: "🔄 Regenerar plano",
+    sw: "🔄 Tengeneza Mpango Upya",
+    tr: "🔄 Planı Yeniden Oluştur",
+    zh: "🔄 重新生成计划"
+  },
+  "dashboard.reminder_body": {
+    ar: "حان وقت %{type}",
+    de: "Zeit für dein %{type}",
+    es: "Es hora de tu %{type}",
+    fr: "C'est l'heure de votre %{type}",
+    hi: "आपके %{type} का समय है",
+    ja: "%{type}の時間です",
+    ko: "%{type} 시간입니다",
+    nl: "Tijd voor je %{type}",
+    pt: "Hora do seu %{type}",
+    sw: "Ni wakati wa %{type} yako",
+    tr: "%{type} zamanı",
+    zh: "是时候进行您的%{type}了"
+  },
+  "dashboard.reminder_title": {
+    ar: "وقت: %{title}",
+    de: "Zeit für: %{title}",
+    es: "Hora de: %{title}",
+    fr: "Heure de : %{title}",
+    hi: "समय: %{title}",
+    ja: "時間: %{title}",
+    ko: "시간: %{title}",
+    nl: "Tijd voor: %{title}",
+    pt: "Hora de: %{title}",
+    sw: "Wakati wa: %{title}",
+    tr: "Zaman: %{title}",
+    zh: "时间：%{title}"
+  },
+  "dashboard.saved_meal": {
+    ar: "الوجبة المحفوظة %{index}",
+    de: "Gespeicherte Mahlzeit %{index}",
+    es: "Comida guardada %{index}",
+    fr: "Repas enregistré %{index}",
+    hi: "सहेजा गया भोजन %{index}",
+    ja: "保存した食事 %{index}",
+    ko: "저장된 식사 %{index}",
+    nl: "Opgeslagen maaltijd %{index}",
+    pt: "Refeição salva %{index}",
+    sw: "Mlo Uliohifadhiwa %{index}",
+    tr: "Kaydedilen Yemek %{index}",
+    zh: "已保存的餐食 %{index}"
+  },
+  "dashboard.saved_meal_description": {
+    ar: "تم تسجيله من الوجبة المحفوظة: %{name}",
+    de: "Protokolliert von gespeicherter Mahlzeit: %{name}",
+    es: "Registrado desde comida guardada: %{name}",
+    fr: "Enregistré depuis repas sauvegardé : %{name}",
+    hi: "सहेजे गए भोजन से लॉग किया गया: %{name}",
+    ja: "保存した食事から記録: %{name}",
+    ko: "저장된 식사에서 기록됨: %{name}",
+    nl: "Gelogd van opgeslagen maaltijd: %{name}",
+    pt: "Registrado de refeição salva: %{name}",
+    sw: "Imerekodiwa kutoka mlo uliohifadhiwa: %{name}",
+    tr: "Kaydedilen yemekten girildi: %{name}",
+    zh: "从已保存的餐食记录：%{name}"
+  },
+  "dashboard.share_text": {
+    ar: "تفقد خطتي اليومية على Body Mode!",
+    de: "Schau dir meinen Tagesplan auf Body Mode an!",
+    es: "¡Mira mi plan diario en Body Mode!",
+    fr: "Découvrez mon plan quotidien sur Body Mode !",
+    hi: "Body Mode पर मेरी दैनिक योजना देखें!",
+    ja: "Body Modeで私のデイリープランをチェック！",
+    ko: "Body Mode에서 내 일일 플랜을 확인하세요!",
+    nl: "Bekijk mijn dagplan op Body Mode!",
+    pt: "Confira meu plano diário no Body Mode!",
+    sw: "Angalia Mpango wangu wa Kila Siku kwenye Body Mode!",
+    tr: "Body Mode'da günlük planımı inceleyin!",
+    zh: "在Body Mode上查看我的每日计划！"
+  },
+  "dashboard.tap_for_details": {
+    ar: "اضغط للتفاصيل →",
+    de: "Tippen für Details →",
+    es: "Toca para detalles →",
+    fr: "Appuyez pour les détails →",
+    hi: "विवरण के लिए टैप करें →",
+    ja: "詳細はタップ →",
+    ko: "상세 정보를 위해 탭 →",
+    nl: "Tik voor details →",
+    pt: "Toque para detalhes →",
+    sw: "Gusa kwa maelezo →",
+    tr: "Detaylar için dokunun →",
+    zh: "点击查看详情 →"
+  },
+  "dashboard.todays_progress": {
+    ar: "تقدم اليوم",
+    de: "Heutiger Fortschritt",
+    es: "Progreso de hoy",
+    fr: "Progrès d'aujourd'hui",
+    hi: "आज की प्रगति",
+    ja: "今日の進捗",
+    ko: "오늘의 진행 상황",
+    nl: "Voortgang vandaag",
+    pt: "Progresso de hoje",
+    sw: "Maendeleo ya Leo",
+    tr: "Bugünkü İlerleme",
+    zh: "今日进度"
+  },
+  "dashboard.unit_ml": {
+    ar: "مل",
+    de: "ml",
+    es: "ml",
+    fr: "ml",
+    hi: "मिली",
+    ja: "ml",
+    ko: "ml",
+    nl: "ml",
+    pt: "ml",
+    sw: "ml",
+    tr: "ml",
+    zh: "毫升"
+  },
+  "dashboard.unit_oz": {
+    ar: "أونصة",
+    de: "oz",
+    es: "oz",
+    fr: "oz",
+    hi: "oz",
+    ja: "oz",
+    ko: "oz",
+    nl: "oz",
+    pt: "oz",
+    sw: "oz",
+    tr: "oz",
+    zh: "盎司"
+  },
+  "dashboard.view_yesterday": {
+    ar: "📅 عرض خطة الأمس",
+    de: "📅 Gestrigen Plan anzeigen",
+    es: "📅 Ver plan de ayer",
+    fr: "📅 Voir le plan d'hier",
+    hi: "📅 कल की योजना देखें",
+    ja: "📅 昨日のプランを見る",
+    ko: "📅 어제의 플랜 보기",
+    nl: "📅 Plan van gisteren bekijken",
+    pt: "📅 Ver plano de ontem",
+    sw: "📅 Tazama mpango wa jana",
+    tr: "📅 Dünün planını görüntüle",
+    zh: "📅 查看昨天的计划"
+  },
+  "dashboard.weather_clear": {
+    ar: "صافي",
+    de: "Klar",
+    es: "Despejado",
+    fr: "Dégagé",
+    hi: "साफ",
+    ja: "晴れ",
+    ko: "맑음",
+    nl: "Helder",
+    pt: "Limpo",
+    sw: "Safi",
+    tr: "Açık",
+    zh: "晴朗"
+  },
+  "dashboard.welcome_fallback": {
+    ar: "مرحباً!",
+    de: "Willkommen!",
+    es: "¡Bienvenido!",
+    fr: "Bienvenue !",
+    hi: "स्वागत है!",
+    ja: "ようこそ！",
+    ko: "환영합니다!",
+    nl: "Welkom!",
+    pt: "Bem-vindo!",
+    sw: "Karibu!",
+    tr: "Hoş geldiniz!",
+    zh: "欢迎！"
+  },
+  "dashboard.widget_all_done": {
+    ar: "✓ كل شيء تم لليوم!",
+    de: "✓ Alles erledigt für heute!",
+    es: "✓ ¡Todo hecho por hoy!",
+    fr: "✓ Tout est fait pour aujourd'hui !",
+    hi: "✓ आज के लिए सब हो गया!",
+    ja: "✓ 今日は全て完了！",
+    ko: "✓ 오늘 모두 완료!",
+    nl: "✓ Alles klaar voor vandaag!",
+    pt: "✓ Tudo pronto por hoje!",
+    sw: "✓ Vyote vimekamilika leo!",
+    tr: "✓ Bugün için her şey tamam!",
+    zh: "✓ 今天全部完成！"
+  },
+  "dashboard.widget_next_item": {
+    ar: "التالي: %{time} - %{title}",
+    de: "Nächstes: %{time} - %{title}",
+    es: "Siguiente: %{time} - %{title}",
+    fr: "Suivant : %{time} - %{title}",
+    hi: "अगला: %{time} - %{title}",
+    ja: "次: %{time} - %{title}",
+    ko: "다음: %{time} - %{title}",
+    nl: "Volgende: %{time} - %{title}",
+    pt: "Próximo: %{time} - %{title}",
+    sw: "Ijayo: %{time} - %{title}",
+    tr: "Sonraki: %{time} - %{title}",
+    zh: "下一项：%{time} - %{title}"
+  }
+};
+
+const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+const writeJsonSorted = (filePath, obj) => {
+  const sorted = {};
+  Object.keys(obj).sort().forEach((key) => {
+    sorted[key] = obj[key];
+  });
+  fs.writeFileSync(filePath, JSON.stringify(sorted, null, 2) + '\n', 'utf8');
+};
+
+const main = () => {
+  const enPath = path.join(TRANSLATIONS_DIR, 'en.json');
+  const en = readJson(enPath);
+
+  const langs = ['ar', 'de', 'es', 'fr', 'hi', 'ja', 'ko', 'nl', 'pt', 'sw', 'tr', 'zh'];
+
+  for (const lang of langs) {
+    const filePath = path.join(TRANSLATIONS_DIR, `${lang}.json`);
+    if (!fs.existsSync(filePath)) continue;
+
+    const translations = readJson(filePath);
+    let updated = 0;
+
+    for (const [key, langTranslations] of Object.entries(DASHBOARD_TRANSLATIONS)) {
+      if (langTranslations[lang] && translations[key] === en[key]) {
+        translations[key] = langTranslations[lang];
+        updated++;
+      }
+    }
+
+    writeJsonSorted(filePath, translations);
+    console.log(`[dashboard-2] ${lang}: ${updated} keys updated`);
+  }
+
+  console.log('[dashboard-2] Part 2 complete');
+};
+
+main();

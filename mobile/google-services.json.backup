@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "185518881144",
+    "project_id": "body-mode-app",
+    "storage_bucket": "body-mode-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:185518881144:android:eb9a37817feae768c0708d",
+        "android_client_info": {
+          "package_name": "com.viperdam.bodymode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "185518881144-8lm9c16a4sbuuelrukcapok7gkvh2753.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.viperdam.bodymode",
+            "certificate_hash": "c31c14e439457623fe3ef007e78cc1e04f581523"
+          }
+        },
+        {
+          "client_id": "185518881144-ida12cc0mp5plt9vda8u01fmocs4st1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.viperdam.bodymode",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "185518881144-p8m64457kfa8jv6gpmhf21rbq6f9a757.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.viperdam.bodymode",
+            "certificate_hash": "acea602de77f548bb6b16dd36c47af418badfd6e"
+          }
+        },
+        {
+          "client_id": "185518881144-t6h0uor3mtbidhgum2qrmed2qc0dp1uh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl8TsC6-o1ZyQkZ7pixcDQAJfbvfZEXlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "185518881144-t6h0uor3mtbidhgum2qrmed2qc0dp1uh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "185518881144-rrvh1gf28n723gir5pj66nh3t3r7kmqh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.viperdam.bodymode"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

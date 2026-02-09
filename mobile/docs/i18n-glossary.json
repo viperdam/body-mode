@@ -1,0 +1,167 @@
+{
+  "description": "Translation glossary for consistent terminology across all 13 languages",
+  "lastUpdated": "2026-01-19",
+  "terms": {
+    "energy": {
+      "en": "Energy",
+      "context": "AI credits/points used for operations",
+      "avoid": ["power", "points", "credits"],
+      "translations": {
+        "ar": "الطاقة",
+        "de": "Energie",
+        "es": "Energía",
+        "fr": "Énergie",
+        "hi": "ऊर्जा",
+        "ja": "エネルギー",
+        "ko": "에너지",
+        "nl": "Energie",
+        "pt": "Energia",
+        "sw": "Nishati",
+        "tr": "Enerji",
+        "zh": "能量"
+      }
+    },
+    "plan": {
+      "en": "Plan",
+      "context": "Daily wellness plan",
+      "avoid": ["schedule", "routine"],
+      "translations": {
+        "ar": "خطة",
+        "de": "Plan",
+        "es": "Plan",
+        "fr": "Plan",
+        "hi": "योजना",
+        "ja": "プラン",
+        "ko": "플랜",
+        "nl": "Plan",
+        "pt": "Plano",
+        "sw": "Mpango",
+        "tr": "Plan",
+        "zh": "计划"
+      }
+    },
+    "coach": {
+      "en": "Coach",
+      "context": "AI Coach persona",
+      "avoid": ["assistant", "bot"],
+      "translations": {
+        "ar": "المدرب",
+        "de": "Coach",
+        "es": "Coach",
+        "fr": "Coach",
+        "hi": "कोच",
+        "ja": "コーチ",
+        "ko": "코치",
+        "nl": "Coach",
+        "pt": "Coach",
+        "sw": "Kocha",
+        "tr": "Koç",
+        "zh": "教练"
+      }
+    },
+    "hydration": {
+      "en": "Hydration",
+      "context": "Water intake tracking",
+      "avoid": ["drinking", "water log"],
+      "translations": {
+        "ar": "الترطيب",
+        "de": "Flüssigkeitszufuhr",
+        "es": "Hidratación",
+        "fr": "Hydratation",
+        "hi": "जलयोजन",
+        "ja": "水分補給",
+        "ko": "수분 섭취",
+        "nl": "Hydratatie",
+        "pt": "Hidratação",
+        "sw": "Maji mwilini",
+        "tr": "Sıvı Alımı",
+        "zh": "补水"
+      }
+    },
+    "sleep_quality": {
+      "en": "Sleep Quality",
+      "context": "Rating of sleep session",
+      "levels": {
+        "excellent": {
+          "en": "Excellent",
+          "ar": "ممتاز",
+          "de": "Ausgezeichnet",
+          "es": "Excelente",
+          "fr": "Excellent",
+          "hi": "उत्कृष्ट",
+          "ja": "優秀",
+          "ko": "우수",
+          "nl": "Uitstekend",
+          "pt": "Excelente",
+          "sw": "Bora sana",
+          "tr": "Mükemmel",
+          "zh": "优秀"
+        },
+        "good": {
+          "en": "Good",
+          "ar": "جيد",
+          "de": "Gut",
+          "es": "Bueno",
+          "fr": "Bon",
+          "hi": "अच्छा",
+          "ja": "良い",
+          "ko": "좋음",
+          "nl": "Goed",
+          "pt": "Bom",
+          "sw": "Nzuri",
+          "tr": "İyi",
+          "zh": "良好"
+        },
+        "fair": {
+          "en": "Fair",
+          "ar": "مقبول",
+          "de": "Befriedigend",
+          "es": "Regular",
+          "fr": "Passable",
+          "hi": "ठीक",
+          "ja": "普通",
+          "ko": "보통",
+          "nl": "Redelijk",
+          "pt": "Regular",
+          "sw": "Wastani",
+          "tr": "Orta",
+          "zh": "一般"
+        },
+        "poor": {
+          "en": "Poor",
+          "ar": "ضعيف",
+          "de": "Schlecht",
+          "es": "Malo",
+          "fr": "Mauvais",
+          "hi": "खराब",
+          "ja": "悪い",
+          "ko": "나쁨",
+          "nl": "Slecht",
+          "pt": "Ruim",
+          "sw": "Mbaya",
+          "tr": "Kötü",
+          "zh": "差"
+        }
+      }
+    },
+    "wrap_up": {
+      "en": "Wrap-Up",
+      "context": "Daily review/summary",
+      "avoid": ["review", "summary", "recap"],
+      "translations": {
+        "ar": "ملخص اليوم",
+        "de": "Tagesabschluss",
+        "es": "Resumen del día",
+        "fr": "Bilan",
+        "hi": "दैनिक सारांश",
+        "ja": "一日のまとめ",
+        "ko": "하루 마무리",
+        "nl": "Dagafsluiting",
+        "pt": "Resumo do dia",
+        "sw": "Muhtasari wa siku",
+        "tr": "Gün Özeti",
+        "zh": "每日总结"
+      }
+    }
+  }
+}

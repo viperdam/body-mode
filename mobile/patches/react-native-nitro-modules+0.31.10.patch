@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native-nitro-modules/android/build.gradle b/node_modules/react-native-nitro-modules/android/build.gradle
+index 3b99080..0f754a3 100644
+--- a/node_modules/react-native-nitro-modules/android/build.gradle
++++ b/node_modules/react-native-nitro-modules/android/build.gradle
+@@ -16,6 +16,12 @@ def reactNativeArchitectures() {
+   return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+ }
+ 
++// Ensure prefab headers path exists during configuration so CMake doesn't fail.
++def nitroHeadersDir = file("${project.buildDir}/headers/nitromodules")
++if (!nitroHeadersDir.exists()) {
++  nitroHeadersDir.mkdirs()
++}
++
+ def isNewArchitectureEnabled() {
+   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+ }

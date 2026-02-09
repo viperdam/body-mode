@@ -1,0 +1,49 @@
+diff --git a/node_modules/react-native-iap/android/build.gradle b/node_modules/react-native-iap/android/build.gradle
+index 3e7691f..2d70468 100644
+--- a/node_modules/react-native-iap/android/build.gradle
++++ b/node_modules/react-native-iap/android/build.gradle
+@@ -17,6 +17,12 @@ def reactNativeArchitectures() {
+   return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+ }
+ 
++// Ensure Nitro headers path exists during configuration so CMake doesn't fail.
++def nitroHeadersDir = file("${rootProject.projectDir}/../node_modules/react-native-nitro-modules/android/build/headers/nitromodules")
++if (!nitroHeadersDir.exists()) {
++  nitroHeadersDir.mkdirs()
++}
++
+ def isNewArchitectureEnabled() {
+   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+ }
+@@ -168,6 +174,14 @@ repositories {
+   google()
+ }
+ 
++tasks.register("ensureNitroHeadersDir") {
++  doLast {
++    if (!nitroHeadersDir.exists()) {
++      nitroHeadersDir.mkdirs()
++    }
++  }
++}
++
+ 
+ dependencies {
+   // For < 0.71, this will be from the local maven repo
+@@ -204,3 +218,16 @@ dependencies {
+ configurations.all {
+   exclude group: 'com.facebook.react', module: 'react-native-safe-area-context'
+ }
++
++afterEvaluate {
++  if (findProject(':react-native-nitro-modules') != null) {
++    tasks.matching { it.name.startsWith("externalNativeBuild") }.configureEach {
++      dependsOn(":react-native-nitro-modules:prepareHeaders")
++      dependsOn("ensureNitroHeadersDir")
++    }
++    tasks.matching { it.name == "preBuild" }.configureEach {
++      dependsOn(":react-native-nitro-modules:prepareHeaders")
++      dependsOn("ensureNitroHeadersDir")
++    }
++  }
++}
