@@ -1,12 +1,47 @@
 
-import { GoogleGenAI, Type, Schema } from "@google/genai";
+import { Type, Schema } from "@google/genai";
 import { FoodAnalysisResult, UserProfile, FoodLogEntry, MoodLog, WeightLogEntry, AppContext, DailyPlan, SleepSession, FridgeIngredientsResult, Recipe, Language, ActivityLogEntry, DailyWrapUp, CookingMood, BioLoadAnalysis } from "../types";
 import { COACH_PERSONA, FOOD_ANALYSIS_PROMPT, TEXT_FOOD_ANALYSIS_PROMPT, DAILY_PLAN_PROMPT, SLEEP_ANALYSIS_PROMPT, SUMMARIZATION_PROMPT, INGREDIENTS_DETECTION_PROMPT, RECIPE_GENERATION_PROMPT, PROFILE_CALCULATION_PROMPT, REFINED_FOOD_ANALYSIS_PROMPT, DAILY_WRAPUP_PROMPT } from "../prompts/aiPrompts";
 import { getLocalDateKey, getLocalTime } from "../utils/dateUtils";
 import { calculateBioLoad } from "./bioEngine"; // Import the new Bio Engine
 
-// Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Secure proxy endpoint - API key stays server-side only
+const PROXY_URL = '/api/gemini-proxy';
+
+interface ProxyResult { text: string | null; }
+
+async function proxyGenerate(params: {
+  model: string;
+  contents: any;
+  config?: any;
+}): Promise<ProxyResult> {
+  // Normalize contents to array format for REST API
+  let contents = params.contents;
+  if (!Array.isArray(contents)) {
+    if (contents?.parts) {
+      contents = [{ role: 'user', parts: contents.parts }];
+    }
+  }
+
+  const res = await fetch(PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: params.model,
+      contents,
+      config: params.config || {},
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+    throw new Error(err.error || `API error: ${res.status}`);
+  }
+
+  const result = await res.json();
+  const text = result.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
+  return { text };
+}
 
 // Helper to clean JSON string from Markdown code blocks
 const cleanAndParseJSON = (text: string): any => {
@@ -155,7 +190,7 @@ export const calculateUserProfile = async (formData: Partial<UserProfile>): Prom
     }
 
     try {
-        const response = await ai.models.generateContent({
+        const response = await proxyGenerate({
             model: 'gemini-2.5-flash',
             contents: { parts: [{ text: promptText }] },
             config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
@@ -171,7 +206,7 @@ export const calculateUserProfile = async (formData: Partial<UserProfile>): Prom
 export const analyzeMedia = async (media: { data: string; mimeType: string }, userProfile?: UserProfile): Promise<FoodAnalysisResult> => {
   try {
     const userContext = userProfile ? `User Context: Goal is ${userProfile.goal}, Weight: ${userProfile.weight}kg. Daily Target: ${userProfile.dailyCalorieTarget}. Medical: ${userProfile.medicalProfile.conditions.join(', ')}` : "";
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
       model: 'gemini-2.5-flash',
       contents: { parts: [{ inlineData: { mimeType: media.mimeType, data: media.data } }, { text: `${FOOD_ANALYSIS_PROMPT} ${userContext}` }] },
       config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
@@ -188,7 +223,7 @@ export const analyzeTextFood = async (textDescription: string, userProfile?: Use
     try {
         const targetLangName = getLanguageFullName(targetLanguage);
         const userContext = userProfile ? `User Context: Goal is ${userProfile.goal}, Weight: ${userProfile.weight}kg. Daily Target: ${userProfile.dailyCalorieTarget}.` : "";
-        const response = await ai.models.generateContent({
+        const response = await proxyGenerate({
             model: 'gemini-2.5-flash',
             contents: { parts: [{ text: `User Description: "${textDescription}". \n${TEXT_FOOD_ANALYSIS_PROMPT}\n${userContext}\nRespond strictly in ${targetLangName}.` }] },
             config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
@@ -210,7 +245,7 @@ export const refineFoodAnalysis = async (originalAnalysis: FoodAnalysisResult, c
          if (match) parts.push({ inlineData: { mimeType: match[1], data: match[2] } });
      }
      parts.push({ text: `${REFINED_FOOD_ANALYSIS_PROMPT} PREVIOUS ANALYSIS: ${JSON.stringify(originalAnalysis)} USER CORRECTION: "${correction}" ${userContext}` });
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
       model: 'gemini-2.5-flash',
       contents: { parts },
       config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
@@ -259,7 +294,7 @@ export const generateDailyPlan = async (userProfile: UserProfile, foodHistory: F
         },
         required: ["date", "summary", "items", "bioLoadSnapshot"]
     };
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
         model: 'gemini-2.5-flash',
         contents: { parts: [{ text: `${DAILY_PLAN_PROMPT}\n\n${context}` }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
@@ -313,7 +348,7 @@ export const generateDailyWrapUp = async (dailyPlan: DailyPlan, dailyFoodLogs: F
         },
         required: ["date", "aiScore", "summary", "comparison", "tomorrowFocus"]
     };
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
         model: 'gemini-2.5-flash',
         contents: { parts: [{ text: prompt }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
@@ -356,7 +391,7 @@ export const analyzeSleepSession = async (
         },
         required: ["efficiencyScore", "aiAnalysis", "stages"]
     };
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
         model: 'gemini-2.5-flash',
         contents: {
             parts: [{ text: `${SLEEP_ANALYSIS_PROMPT}\n\nTARGET LANGUAGE: ${targetLangName}\n\nLOGS:\n${logString}` }]
@@ -370,7 +405,7 @@ export const analyzeSleepSession = async (
 export const createChatSession = (userProfile: UserProfile, foodHistory: FoodLogEntry[], moodHistory: MoodLog[], weightHistory: WeightLogEntry[], appContext: AppContext, dailyPlan: DailyPlan | null, mode: 'personal' | 'general') => {
   let finalInstruction = COACH_PERSONA;
   if (mode === 'personal') {
-      const mockWater = { date: new Date().toDateString(), amount: 0 }; 
+      const mockWater = { date: new Date().toDateString(), amount: 0 };
       const mockActivity: ActivityLogEntry[] = [];
       const sleepMock = [{date: 'today', hours: 7}];
       const dynamicContext = generateUserContextString(userProfile, foodHistory, mockActivity, moodHistory, weightHistory, mockWater, sleepMock, appContext, dailyPlan);
@@ -378,13 +413,28 @@ export const createChatSession = (userProfile: UserProfile, foodHistory: FoodLog
   } else {
       finalInstruction = `${COACH_PERSONA}\n\nCONTEXT: The user is asking a GENERAL question. Do not refer to their specific stats, logs, or plans. Just give expert general advice.`;
   }
-  return ai.chats.create({ model: 'gemini-flash-lite-latest', config: { systemInstruction: finalInstruction } });
+  // Proxy-based chat: maintain history client-side, send full context each call
+  const history: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+  return {
+    sendMessage: async (params: { message: string }): Promise<ProxyResult> => {
+      history.push({ role: 'user', parts: [{ text: params.message }] });
+      const result = await proxyGenerate({
+        model: 'gemini-flash-lite-latest',
+        contents: history,
+        config: { systemInstruction: finalInstruction },
+      });
+      if (result.text) {
+        history.push({ role: 'model', parts: [{ text: result.text }] });
+      }
+      return result;
+    }
+  };
 };
 
 export const summarizeHistory = async (existingSummary: string, oldFoodLogs: FoodLogEntry[], oldMoodLogs: MoodLog[], oldWeightLogs: WeightLogEntry[]): Promise<string> => {
     if (oldFoodLogs.length === 0 && oldMoodLogs.length === 0 && oldWeightLogs.length === 0) return existingSummary;
     const dataDump = `EXISTING SUMMARY: "${existingSummary}" NEW DATA: Food: ${oldFoodLogs.length} items. Mood: ${oldMoodLogs.map(m => m.mood).join(', ')}. Weight: ${oldWeightLogs.map(w => w.weight + 'kg').join(' -> ')}.`;
-    const response = await ai.models.generateContent({ model: 'gemini-2.5-flash', contents: { parts: [{ text: `${SUMMARIZATION_PROMPT}\n\nDATA:\n${dataDump}` }] }, config: { responseMimeType: 'text/plain' } });
+    const response = await proxyGenerate({ model: 'gemini-2.5-flash', contents: { parts: [{ text: `${SUMMARIZATION_PROMPT}\n\nDATA:\n${dataDump}` }] }, config: { responseMimeType: 'text/plain' } });
     return response.text || existingSummary;
 };
 
@@ -397,7 +447,7 @@ export const detectFridgeIngredients = async (media: { data: string; mimeType: s
         required: ["detectedIngredients"]
     };
     
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
         model: 'gemini-2.5-flash',
         contents: { parts: [{ inlineData: { mimeType: media.mimeType, data: media.data } }, { text: INGREDIENTS_DETECTION_PROMPT }] },
         config: { responseMimeType: 'application/json', responseSchema: schema }
@@ -444,7 +494,7 @@ export const generateFridgeRecipes = async (ingredients: string[], mood: Cooking
         required: ["recipes"]
     };
 
-    const response = await ai.models.generateContent({
+    const response = await proxyGenerate({
         model: 'gemini-2.5-flash',
         contents: { parts: [{ text: `${RECIPE_GENERATION_PROMPT}\n\nINGREDIENTS: ${ingredients.join(', ')}\n\nCONTEXT: ${userContext}` }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }

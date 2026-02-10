@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { UserProfile, ChatMessage, FoodLogEntry, MoodLog, WeightLogEntry, AppContext, DailyPlan, ENERGY_COSTS } from '../types';
 import { createChatSession } from '../services/geminiService';
-import { Chat } from '@google/genai';
 import { useEnergy } from '../contexts/EnergyContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -23,7 +22,7 @@ export const AICoach: React.FC<AICoachProps> = ({ user, foodHistory, moodHistory
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const chatSessionRef = useRef<Chat | null>(null);
+  const chatSessionRef = useRef<{ sendMessage: (params: { message: string }) => Promise<{ text: string | null }> } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize Chat based on Selection

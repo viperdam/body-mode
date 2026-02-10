@@ -245,7 +245,7 @@ async function callGeminiAPI(apiKey, model, contents, config = {}) {
 /**
  * Main handler function
  */
-exports.handler = async (event) => {
+export const handler = async (event) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
     return {
