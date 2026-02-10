@@ -92,7 +92,7 @@ const SmartFridgeScreen: React.FC = () => {
         return () => {
             subscription.remove();
         };
-    }, [isFocused, isRecording]);
+    }, [isFocused]);
 
     const checkPermission = async () => {
         if (permission && !permission.granted) {
@@ -121,17 +121,15 @@ const SmartFridgeScreen: React.FC = () => {
                 if (cameraRef.current) {
                     // @ts-ignore - pausePreview exists on some camera implementations
                     cameraRef.current.pausePreview?.();
+                    cameraRef.current.stopRecording?.();
                 }
                 if (recordingTimerRef.current) {
                     clearInterval(recordingTimerRef.current);
                     recordingTimerRef.current = null;
                 }
-                if (isRecording && cameraRef.current) {
-                    cameraRef.current.stopRecording();
-                }
                 setIsRecording(false);
             };
-        }, [loadBookmarks, isRecording])
+        }, [loadBookmarks])
     );
 
     const toggleBookmark = async (recipe: Recipe) => {

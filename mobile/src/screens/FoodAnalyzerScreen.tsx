@@ -131,7 +131,7 @@ const FoodAnalyzerScreen: React.FC = () => {
         return () => {
             subscription.remove();
         };
-    }, [isFocused, isRecording]);
+    }, [isFocused]);
 
     useFocusEffect(
         useCallback(() => {
@@ -141,17 +141,15 @@ const FoodAnalyzerScreen: React.FC = () => {
                     // Best effort cleanup when leaving the screen.
                     // @ts-ignore - pausePreview exists on some camera implementations
                     cameraRef.current.pausePreview?.();
+                    cameraRef.current.stopRecording?.();
                 }
                 if (recordingTimerRef.current) {
                     clearInterval(recordingTimerRef.current);
                     recordingTimerRef.current = null;
                 }
-                if (isRecording && cameraRef.current) {
-                    cameraRef.current.stopRecording();
-                }
                 setIsRecording(false);
             };
-        }, [isRecording])
+        }, [])
     );
 
 
