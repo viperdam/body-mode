@@ -191,7 +191,7 @@ export const calculateUserProfile = async (formData: Partial<UserProfile>): Prom
 
     try {
         const response = await proxyGenerate({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: { parts: [{ text: promptText }] },
             config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
         });
@@ -207,7 +207,7 @@ export const analyzeMedia = async (media: { data: string; mimeType: string }, us
   try {
     const userContext = userProfile ? `User Context: Goal is ${userProfile.goal}, Weight: ${userProfile.weight}kg. Daily Target: ${userProfile.dailyCalorieTarget}. Medical: ${userProfile.medicalProfile.conditions.join(', ')}` : "";
     const response = await proxyGenerate({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: { parts: [{ inlineData: { mimeType: media.mimeType, data: media.data } }, { text: `${FOOD_ANALYSIS_PROMPT} ${userContext}` }] },
       config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
     });
@@ -224,7 +224,7 @@ export const analyzeTextFood = async (textDescription: string, userProfile?: Use
         const targetLangName = getLanguageFullName(targetLanguage);
         const userContext = userProfile ? `User Context: Goal is ${userProfile.goal}, Weight: ${userProfile.weight}kg. Daily Target: ${userProfile.dailyCalorieTarget}.` : "";
         const response = await proxyGenerate({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             contents: { parts: [{ text: `User Description: "${textDescription}". \n${TEXT_FOOD_ANALYSIS_PROMPT}\n${userContext}\nRespond strictly in ${targetLangName}.` }] },
             config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
         });
@@ -246,7 +246,7 @@ export const refineFoodAnalysis = async (originalAnalysis: FoodAnalysisResult, c
      }
      parts.push({ text: `${REFINED_FOOD_ANALYSIS_PROMPT} PREVIOUS ANALYSIS: ${JSON.stringify(originalAnalysis)} USER CORRECTION: "${correction}" ${userContext}` });
     const response = await proxyGenerate({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: { parts },
       config: { responseMimeType: 'application/json', responseSchema: FOOD_SCHEMA, systemInstruction: COACH_PERSONA }
     });
@@ -295,7 +295,7 @@ export const generateDailyPlan = async (userProfile: UserProfile, foodHistory: F
         required: ["date", "summary", "items", "bioLoadSnapshot"]
     };
     const response = await proxyGenerate({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: { parts: [{ text: `${DAILY_PLAN_PROMPT}\n\n${context}` }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
     });
@@ -349,7 +349,7 @@ export const generateDailyWrapUp = async (dailyPlan: DailyPlan, dailyFoodLogs: F
         required: ["date", "aiScore", "summary", "comparison", "tomorrowFocus"]
     };
     const response = await proxyGenerate({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: { parts: [{ text: prompt }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
     });
@@ -392,7 +392,7 @@ export const analyzeSleepSession = async (
         required: ["efficiencyScore", "aiAnalysis", "stages"]
     };
     const response = await proxyGenerate({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: {
             parts: [{ text: `${SLEEP_ANALYSIS_PROMPT}\n\nTARGET LANGUAGE: ${targetLangName}\n\nLOGS:\n${logString}` }]
         },
@@ -434,7 +434,7 @@ export const createChatSession = (userProfile: UserProfile, foodHistory: FoodLog
 export const summarizeHistory = async (existingSummary: string, oldFoodLogs: FoodLogEntry[], oldMoodLogs: MoodLog[], oldWeightLogs: WeightLogEntry[]): Promise<string> => {
     if (oldFoodLogs.length === 0 && oldMoodLogs.length === 0 && oldWeightLogs.length === 0) return existingSummary;
     const dataDump = `EXISTING SUMMARY: "${existingSummary}" NEW DATA: Food: ${oldFoodLogs.length} items. Mood: ${oldMoodLogs.map(m => m.mood).join(', ')}. Weight: ${oldWeightLogs.map(w => w.weight + 'kg').join(' -> ')}.`;
-    const response = await proxyGenerate({ model: 'gemini-2.5-flash', contents: { parts: [{ text: `${SUMMARIZATION_PROMPT}\n\nDATA:\n${dataDump}` }] }, config: { responseMimeType: 'text/plain' } });
+    const response = await proxyGenerate({ model: 'gemini-3-flash-preview', contents: { parts: [{ text: `${SUMMARIZATION_PROMPT}\n\nDATA:\n${dataDump}` }] }, config: { responseMimeType: 'text/plain' } });
     return response.text || existingSummary;
 };
 
@@ -448,7 +448,7 @@ export const detectFridgeIngredients = async (media: { data: string; mimeType: s
     };
     
     const response = await proxyGenerate({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: { parts: [{ inlineData: { mimeType: media.mimeType, data: media.data } }, { text: INGREDIENTS_DETECTION_PROMPT }] },
         config: { responseMimeType: 'application/json', responseSchema: schema }
     });
@@ -495,7 +495,7 @@ export const generateFridgeRecipes = async (ingredients: string[], mood: Cooking
     };
 
     const response = await proxyGenerate({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: { parts: [{ text: `${RECIPE_GENERATION_PROMPT}\n\nINGREDIENTS: ${ingredients.join(', ')}\n\nCONTEXT: ${userContext}` }] },
         config: { responseMimeType: 'application/json', responseSchema: schema, systemInstruction: COACH_PERSONA }
     });
