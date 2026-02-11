@@ -23,13 +23,16 @@ async function proxyGenerate(params: {
     }
   }
 
+  // Disable thinking tokens for speed (12s → ~2s)
+  const config = { ...(params.config || {}), thinkingConfig: { thinkingBudget: 0 } };
+
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: params.model,
       contents,
-      config: params.config || {},
+      config,
     }),
   });
 
@@ -301,6 +304,8 @@ export const generateDailyPlan = async (userProfile: UserProfile, foodHistory: F
     });
     if (response.text) {
         const newPlan = cleanAndParseJSON(response.text) as DailyPlan;
+        // Override date - the model doesn't know today's date, so force it
+        newPlan.date = getLocalDateKey(new Date());
         if (currentPlan && currentPlan.date === newPlan.date) {
             const historyItems = currentPlan.items.filter(item => item.completed || item.skipped);
             const futureItems = newPlan.items.filter(newItem => {

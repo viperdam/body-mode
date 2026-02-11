@@ -221,6 +221,11 @@ async function callGeminiAPI(apiKey, model, contents, config = {}) {
     requestBody.generationConfig.responseSchema = config.responseSchema;
   }
 
+  // Pass thinking config (allows disabling/limiting thinking tokens for speed)
+  if (config.thinkingConfig) {
+    requestBody.generationConfig.thinkingConfig = config.thinkingConfig;
+  }
+
   console.log(`[Gemini Proxy] Calling ${model} with ${JSON.stringify(contents).length} bytes`);
 
   const response = await fetch(endpoint, {
